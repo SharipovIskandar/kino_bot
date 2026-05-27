@@ -15,21 +15,16 @@ welcome =
     👋 Salom, <b>{ $name }</b>!
 
     🎬 <b>KinoBot</b>ga xush kelibsiz!
-    Bu yerda siz istalgan kinoni topishingiz mumkin.
 
-    💡 Kino kodini yuboring yoki <b>🔍 Qidirish</b> tugmasini bosing.
+    Bu bot orqali siz:
+    🎥 Kino kodini kiritib istalgan kinoni olishingiz
+    🔍 Kino nomi bo'yicha qidirishingiz mumkin!
 
-welcome-back =
-    👋 Qaytib keldingiz, <b>{ $name }</b>!
+    📌 <b>Qanday foydalanish:</b>
+    • Kino kodini yuboring (masalan: <code>1234</code>) — kino darhol keladi
+    • Yoki <b>🔍 Qidirish</b> tugmasini bosib nom bo'yicha izlang
 
-    💡 Kino kodini yuboring yoki <b>🔍 Qidirish</b> tugmasini bosing.
-
-choose-language = 🌐 Tilni tanlang / Choose language / Выберите язык:
-language-changed = ✅ Til o'zgartirildi → <b>O'zbek</b>
-
-btn-language-uz = 🇺🇿 O'zbek
-btn-language-ru = 🇷🇺 Русский
-btn-language-en = 🇺🇸 English
+    ❓ Yordam kerakmi? /help yozing
 
 # ── Yordam ──────────────────────────
 help =
@@ -41,14 +36,21 @@ help =
     🔍 <b>Nom bo'yicha qidirish:</b>
     🔍 Qidirish tugmasini bosing yoki /search yozing, so'ng kino nomini kiriting.
 
-    🌐 <b>Tilni o'zgartirish:</b>
-    🌐 Til tugmasini bosing yoki /language yozing.
-
     📌 <b>Buyruqlar:</b>
     /start — Botni qayta boshlash
     /search — Kino qidirish
-    /language — Tilni o'zgartirish
     /help — Shu yordam
+
+# ── Noma'lum xabar ──────────────────
+unknown-command =
+    ❓ Bunday buyruq mavjud emas.
+
+    📌 Mavjud buyruqlar:
+    /start — Botni boshlash
+    /search — Kino qidirish
+    /help — Yordam
+
+unknown-message = 💡 Kino kodini yuboring (masalan: <code>1234</code>) yoki <b>🔍 Qidirish</b> tugmasini bosing.
 
 # ── Obuna ───────────────────────────
 subscription-required =

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Yangi Broadcast — KinoBot Admin{% endblock %}
+{% block page_title %}Yangi Broadcast yaratish{% endblock %}
+
+{% block content %}
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-x-circle me-2"></i>{{ error }}</div>
+{% endif %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-megaphone text-primary me-2"></i>Yangi broadcast
+      </div>
+      <div class="card-body">
+        <form method="post" action="/broadcast/create">
+          <div class="mb-3">
+            <label class="form-label fw-medium">Maqsad auditoriya *</label>
+            <select name="target" class="form-select" required>
+              {% for t in targets %}
+              <option value="{{ t.value }}">
+                {% if t.value == 'all' %}Barcha foydalanuvchilar
+                {% elif t.value == 'active_7d' %}Oxirgi 7 kunda faol
+                {% elif t.value == 'active_30d' %}Oxirgi 30 kunda faol
+                {% elif t.value == 'lang_uz' %}O'zbek tilli
+                {% elif t.value == 'lang_ru' %}Rus tilli
+                {% elif t.value == 'lang_en' %}Ingliz tilli
+                {% else %}{{ t.value }}{% endif %}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-medium">Xabar matni</label>
+            <textarea name="text" class="form-control" rows="6"
+                      placeholder="Xabar matnini kiriting... (HTML teglari qo'llab-quvvatlanadi)"></textarea>
+            <small class="text-muted">
+              Qo'llab-quvvatlanadigan tegler: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;, &lt;a href=""&gt;, &lt;code&gt;
+            </small>
+          </div>
+
+          <div class="alert alert-info py-2 small">
+            <i class="bi bi-info-circle me-2"></i>
+            Broadcast yaratilgandan so'ng <strong>PENDING</strong> holatiga o'tadi.
+            Telegram bot orqali <code>/admin → Broadcast</code> bo'limidan yuborishingiz mumkin.
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-4">
+              <i class="bi bi-check-lg me-2"></i>Broadcast yaratish
+            </button>
+            <a href="/broadcast" class="btn btn-outline-secondary">Bekor qilish</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

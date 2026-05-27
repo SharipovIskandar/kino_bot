@@ -7,39 +7,37 @@ from bot.database.models import MandatoryChannel
 from bot.services.i18n import get_text
 
 
-def build_language_keyboard() -> InlineKeyboardMarkup:
-    """Til tanlash klaviaturasi"""
-    builder = InlineKeyboardBuilder()
-    builder.row(
-        InlineKeyboardButton(text="🇺🇿 O'zbek", callback_data="lang_uz"),
-        InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru"),
-        InlineKeyboardButton(text="🇺🇸 English", callback_data="lang_en"),
-    )
-    return builder.as_markup()
-
 
 def build_subscription_keyboard(
     channels: List[MandatoryChannel],
     lang: str = "uz",
+    channel_urls: dict | None = None,
 ) -> InlineKeyboardMarkup:
     """Majburiy kanal obuna tugmalari"""
     builder = InlineKeyboardBuilder()
 
     for channel in channels:
-        # Kanal URL'ini aniqlash
-        if channel.invite_link:
+        # URL aniqlash: override dict > invite_link > username > None
+        if channel_urls and channel.channel_id in channel_urls:
+            url = channel_urls[channel.channel_id]
+        elif channel.invite_link:
             url = channel.invite_link
         elif channel.channel_username:
             url = f"https://t.me/{channel.channel_username.lstrip('@')}"
         else:
-            url = f"https://t.me/c/{str(channel.channel_id).lstrip('-100')}"
+            url = None  # Private channel without any link
 
-        builder.row(
-            InlineKeyboardButton(
-                text=f"📢 {channel.channel_title}",
-                url=url,
+        if url:
+            builder.row(
+                InlineKeyboardButton(
+                    text=f"📢 {channel.channel_title}",
+                    url=url,
+                )
             )
-        )
+        else:
+            # Link yo'q — tugmani ko'rsatmaymiz (faqat kanal nomi)
+            # Bu holat admin invite_link o'rnatmagan bo'lganda uchraydi
+            pass
 
     # "Tekshirish" tugmasi
     builder.row(
@@ -58,7 +56,6 @@ def build_main_menu(lang: str = "uz") -> ReplyKeyboardMarkup:
         KeyboardButton(text="🔍 " + ("Qidirish" if lang == "uz" else "Поиск" if lang == "ru" else "Search")),
     )
     builder.row(
-        KeyboardButton(text="🌐 " + ("Til" if lang == "uz" else "Язык" if lang == "ru" else "Language")),
         KeyboardButton(text="ℹ️ " + ("Yordam" if lang == "uz" else "Помощь" if lang == "ru" else "Help")),
     )
     return builder.as_markup(resize_keyboard=True)

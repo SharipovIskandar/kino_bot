@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Kanallar — KinoBot Admin{% endblock %}
+{% block page_title %}Majburiy obuna kanallari{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+        <span><i class="bi bi-broadcast text-primary me-2"></i>Kanallar ro'yxati</span>
+        <span class="badge bg-primary">{{ channels|length }} ta</span>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Kanal ID</th>
+                <th>Nomi</th>
+                <th>Username</th>
+                <th>Holat</th>
+                <th class="text-end">Amallar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ch in channels %}
+              <tr>
+                <td class="text-muted">{{ ch.order }}</td>
+                <td><code>{{ ch.channel_id }}</code></td>
+                <td class="fw-medium">{{ ch.channel_title }}</td>
+                <td>
+                  {% if ch.channel_username %}
+                  <a href="https://t.me/{{ ch.channel_username }}" target="_blank" class="text-primary">
+                    @{{ ch.channel_username }}
+                  </a>
+                  {% else %}—{% endif %}
+                </td>
+                <td>
+                  {% if ch.is_active %}
+                  <span class="badge bg-success">Faol</span>
+                  {% else %}
+                  <span class="badge bg-secondary">Nofaol</span>
+                  {% endif %}
+                </td>
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal"
+                            data-bs-target="#editModal"
+                            data-id="{{ ch.channel_id }}"
+                            data-title="{{ ch.channel_title }}"
+                            data-username="{{ ch.channel_username or '' }}"
+                            data-link="{{ ch.invite_link or '' }}"
+                            data-order="{{ ch.order }}">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <form method="post" action="/channels/{{ ch.channel_id }}/toggle">
+                      <button class="btn {% if ch.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                        <i class="bi {% if ch.is_active %}bi-eye-slash{% else %}bi-eye{% endif %}"></i>
+                      </button>
+                    </form>
+                    <form method="post" action="/channels/{{ ch.channel_id }}/remove"
+                          onsubmit="return confirm('Kanalni o\'chirishni tasdiqlaysizmi?')">
+                      <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% else %}
+              <tr><td colspan="6" class="text-center text-muted py-4">Kanallar yo'q</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add channel form -->
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-plus-circle text-success me-2"></i>Yangi kanal qo'shish
+      </div>
+      <div class="card-body">
+        <form method="post" action="/channels/add">
+          <div class="mb-3">
+            <label class="form-label fw-medium">Kanal ID *</label>
+            <input type="number" name="channel_id" class="form-control"
+                   placeholder="-1001234567890" required>
+            <small class="text-muted">Manfiy son bo'lishi kerak (kanallar uchun)</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-medium">Kanal nomi *</label>
+            <input type="text" name="channel_title" class="form-control"
+                   placeholder="KinoBot Rasmiy" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-medium">Username</label>
+            <div class="input-group">
+              <span class="input-group-text">@</span>
+              <input type="text" name="channel_username" class="form-control"
+                     placeholder="kinobot_channel">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-medium">Taklif havolasi</label>
+            <input type="text" name="invite_link" class="form-control"
+                   placeholder="https://t.me/+...">
+          </div>
+          <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-plus-lg me-2"></i>Qo'shish
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Kanalni tahrirlash</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="post" id="editForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nomi *</label>
+            <input type="text" name="channel_title" class="form-control" required id="editTitle">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="channel_username" class="form-control" id="editUsername">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Taklif havolasi</label>
+            <input type="text" name="invite_link" class="form-control" id="editLink">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tartib raqami</label>
+            <input type="number" name="order" class="form-control" id="editOrder">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('editModal').addEventListener('show.bs.modal', function(e) {
+  const btn = e.relatedTarget;
+  const form = document.getElementById('editForm');
+  form.action = `/channels/${btn.dataset.id}/edit`;
+  document.getElementById('editTitle').value = btn.dataset.title;
+  document.getElementById('editUsername').value = btn.dataset.username;
+  document.getElementById('editLink').value = btn.dataset.link;
+  document.getElementById('editOrder').value = btn.dataset.order;
+});
+</script>
+{% endblock %}

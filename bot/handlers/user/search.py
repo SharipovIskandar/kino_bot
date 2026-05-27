@@ -1,19 +1,16 @@
-import aiohttp
-
 from aiogram import Router, F
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.crud.movie import get_movie_by_code, search_movies, record_view
-from bot.database.crud.channel import get_active_channels
 from bot.database.models import User, Movie
 from bot.services.i18n import get_text
-from bot.services.subscription_checker import check_user_subscriptions
-from bot.keyboards.user_kb import build_subscription_keyboard
 from bot.config import settings
 
 
@@ -31,54 +28,14 @@ class SearchState(StatesGroup):
 
 # ── Kino kodi yoki nom kiritilganda ───────────────────────────────────────────
 
-async def _subscription_gate(
-    message: Message,
-    bot,
-    session: AsyncSession,
-    db_user: User,
-    lang: str,
-) -> bool:
-    """
-    Obunani tekshiradi. True — o'tishi mumkin, False — bloklangan.
-    Adminlar har doim o'ta oladi.
-    """
-    is_privileged = (
-        db_user.telegram_id in settings.super_admin_list
-        or db_user.admin_profile is not None
-    )
-    if is_privileged:
-        return True
-
-    channels = await get_active_channels(session)
-    if not channels:
-        return True
-
-    not_subscribed = await check_user_subscriptions(
-        bot=bot, user_id=db_user.telegram_id, channels=channels
-    )
-    if not not_subscribed:
-        return True
-
-    await message.answer(
-        get_text("subscription-required", lang),
-        reply_markup=build_subscription_keyboard(not_subscribed, lang),
-    )
-    return False
-
-
 @router.message(Command("search"))
 @router.message(F.text.in_(_SEARCH_BTN))
 async def cmd_search(
     message: Message,
     state: FSMContext,
-    session: AsyncSession,
-    db_user: User,
     lang: str,
-    bot,
 ) -> None:
     """Qidiruv boshlash — /search yoki '🔍 Qidirish' tugmasi"""
-    if not await _subscription_gate(message, bot, session, db_user, lang):
-        return
     await message.answer(get_text("search-prompt", lang))
     await state.set_state(SearchState.waiting_query)
 
@@ -92,6 +49,10 @@ async def process_search_query(
 ) -> None:
     """Qidiruv so'rovini qayta ishlash"""
     query = message.text.strip()
+    if not query:
+        await state.set_state(SearchState.waiting_query)
+        await message.answer(get_text("search-prompt", lang))
+        return
     await state.clear()
     await _do_search(message, session, query, lang)
 
@@ -105,9 +66,6 @@ async def process_movie_code(
     bot,
 ) -> None:
     """Faqat raqam kiritilsa — kino kodi deb qabul qilamiz"""
-    if not await _subscription_gate(message, bot, session, db_user, lang):
-        return
-
     code = message.text.strip().upper()
     movie = await get_movie_by_code(session, code)
 
@@ -233,6 +191,25 @@ async def process_search_pagination(
     await callback.answer()
 
 
+def _build_movie_info_text(movie: Movie, lang: str) -> str:
+    """Kino ma'lumotlari kartochkasini formatlash"""
+    genres = ", ".join(g.get_name(lang) for g in movie.genres) if movie.genres else ""
+    return get_text(
+        "movie-info",
+        lang,
+        title=movie.get_title(lang),
+        year=movie.year or 0,
+        duration=movie.duration or 0,
+        country=movie.country or "",
+        genres=genres,
+        lang_type=movie.language_type.value if movie.language_type else "",
+        imdb=movie.imdb_rating or 0,
+        kinopoisk=movie.kinopoisk_rating or 0,
+        description=movie.get_description(lang),
+        views=movie.view_count + 1,
+    )
+
+
 async def _send_movie(
     message: Message,
     bot,
@@ -241,26 +218,33 @@ async def _send_movie(
     db_user: User,
     lang: str,
 ) -> None:
-    """Kinoni forward qilish va ma'lumotini yuborish"""
-    # Kino faylini kanaldan caption'siz jo'natish
-    # aiogram caption="" ni serialize qilmasligi sababli to'g'ridan-to'g'ri API ishlatiladi
+    """Kinoni yuborish, ma'lumot kartochkasini ko'rsatish"""
     try:
-        url = f"https://api.telegram.org/bot{bot.token}/copyMessage"
-        payload = {
-            "chat_id": message.chat.id,
-            "from_chat_id": settings.movie_channel_id,
-            "message_id": movie.channel_message_id,
-            "caption": "",
-            "protect_content": True,
-        }
-        async with aiohttp.ClientSession() as http:
-            async with http.post(url, json=payload) as resp:
-                result = await resp.json()
-                if not result.get("ok"):
-                    raise Exception(result.get("description", "Noma'lum xato"))
-    except Exception as e:
-        await message.answer(f"⚠️ Kinoni yuklashda xatolik: {e}")
+        await bot.copy_message(
+            chat_id=message.chat.id,
+            from_chat_id=settings.movie_channel_id,
+            message_id=movie.channel_message_id,
+            caption="",
+            protect_content=True,
+        )
+    except TelegramBadRequest as e:
+        if "message to copy not found" in str(e).lower() or "message_id_invalid" in str(e).lower():
+            # Kanal xabari o'chirilgan — kinoni noaktiv qilish
+            movie.is_active = False
+            logger.warning(f"Movie {movie.code} deactivated: channel msg {movie.channel_message_id} not found")
+            await message.answer(get_text("movie-not-found", lang, code=movie.code))
+        else:
+            logger.error(f"copy_message failed for {movie.code}: {e}")
+            await message.answer(get_text("error-general", lang))
         return
+    except Exception as e:
+        logger.error(f"Movie send error {movie.code}: {type(e).__name__}")
+        await message.answer(get_text("error-general", lang))
+        return
+
+    # Kino ma'lumotlari kartochkasini yuborish
+    info_text = _build_movie_info_text(movie, lang)
+    await message.answer(info_text)
 
     # Ko'rish statistikasini saqlash
     if db_user:

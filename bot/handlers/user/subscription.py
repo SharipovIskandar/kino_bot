@@ -24,7 +24,10 @@ async def process_check_subscription(
 
     if not channels:
         # Kanal yo'q — botni ishlata oladi
-        await callback.message.delete()
+        try:
+            await callback.message.delete()
+        except Exception:
+            pass
         await callback.message.answer(
             get_text("subscription-ok", lang),
             reply_markup=build_main_menu(lang),
@@ -40,15 +43,23 @@ async def process_check_subscription(
 
     if not not_subscribed:
         # Hammasi tekshirildi — botni ishlata oladi
-        await callback.message.delete()
+        try:
+            await callback.message.delete()
+        except Exception:
+            pass
         await callback.message.answer(
             get_text("subscription-ok", lang),
             reply_markup=build_main_menu(lang),
         )
     else:
         # Hali obuna bo'lmagan kanallar bor
-        keyboard = build_subscription_keyboard(not_subscribed, lang)
-        await callback.message.edit_reply_markup(reply_markup=keyboard)
+        from bot.middlewares.subscription import _get_invite_links
+        channel_urls = await _get_invite_links(bot, not_subscribed, session=session)
+        keyboard = build_subscription_keyboard(not_subscribed, lang, channel_urls=channel_urls)
+        try:
+            await callback.message.edit_reply_markup(reply_markup=keyboard)
+        except Exception:
+            pass
         await callback.answer(
             get_text("subscription-fail", lang),
             show_alert=True,

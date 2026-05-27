@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Broadcast — KinoBot Admin{% endblock %}
+{% block page_title %}Broadcast xabarlar{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-end mb-3">
+  <a href="/broadcast/create" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-2"></i>Yangi broadcast
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white fw-semibold">
+    <i class="bi bi-megaphone text-primary me-2"></i>Jami: <strong>{{ total }}</strong> ta
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Matn</th>
+            <th>Maqsad</th>
+            <th>Holat</th>
+            <th>Yuborildi</th>
+            <th>Yaratilgan</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in broadcasts %}
+          <tr>
+            <td>{{ b.id }}</td>
+            <td>
+              {% if b.text %}
+              <span class="text-truncate d-inline-block" style="max-width:200px">{{ b.text }}</span>
+              {% else %}
+              <span class="text-muted"><i class="bi bi-image me-1"></i>Media</span>
+              {% endif %}
+            </td>
+            <td><span class="badge bg-secondary">{{ b.target.value }}</span></td>
+            <td>
+              {% if b.status.value == 'pending' %}
+              <span class="badge bg-warning text-dark">Kutmoqda</span>
+              {% elif b.status.value == 'running' %}
+              <span class="badge bg-primary">Yuborilmoqda</span>
+              {% elif b.status.value == 'done' %}
+              <span class="badge bg-success">Tugadi</span>
+              {% elif b.status.value == 'failed' %}
+              <span class="badge bg-danger">Xato</span>
+              {% elif b.status.value == 'cancelled' %}
+              <span class="badge bg-secondary">Bekor</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if b.total_users > 0 %}
+              <div class="small">
+                <span class="text-success">✓ {{ b.total_sent }}</span> /
+                <span class="text-danger">✗ {{ b.total_failed }}</span> /
+                <span class="text-muted">{{ b.total_users }}</span>
+              </div>
+              {% else %}—{% endif %}
+            </td>
+            <td class="text-muted small">{{ b.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td>
+              {% if b.status.value in ('pending', 'running') %}
+              <form method="post" action="/broadcast/{{ b.id }}/cancel"
+                    onsubmit="return confirm('Bekor qilishni tasdiqlaysizmi?')">
+                <button class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-x-circle"></i> Bekor
+                </button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="7" class="text-center text-muted py-4">Broadcast xabarlar yo'q</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% if total_pages > 1 %}
+  <div class="card-footer bg-white">
+    <nav>
+      <ul class="pagination pagination-sm mb-0 justify-content-center">
+        <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ page-1 }}">‹</a>
+        </li>
+        {% for p in range([1, page-2]|max, [total_pages+1, page+3]|min) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+          <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+        <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ page+1 }}">›</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

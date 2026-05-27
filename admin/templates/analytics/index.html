@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Analytika — KinoBot Admin{% endblock %}
+{% block page_title %}Analytika va Statistika{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Activity charts -->
+<div class="row g-3 mb-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-graph-up text-primary me-2"></i>So'nggi 30 kun faoliyati
+      </div>
+      <div class="card-body">
+        <canvas id="activityChart" height="60"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-clock text-warning me-2"></i>Soatlar bo'yicha faollik (7 kun)
+      </div>
+      <div class="card-body">
+        <canvas id="hourlyChart" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-pie-chart text-info me-2"></i>Til taqsimoti
+      </div>
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="langChart" height="120"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-trophy text-warning me-2"></i>Top 10 kino (barcha vaqt)
+      </div>
+      <div class="card-body">
+        <canvas id="topChart" height="80"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const DATES = {{ dates | tojson }};
+const REG  = {{ reg_vals | tojson }};
+const VIEWS = {{ views_vals | tojson }};
+const HOURLY_LABELS = {{ hourly_labels | tojson }};
+const HOURLY_DATA   = {{ hourly_data | tojson }};
+const LANG_LABELS   = {{ lang_labels | tojson }};
+const LANG_DATA     = {{ lang_data | tojson }};
+const TOP_TITLES    = {{ top_titles | tojson }};
+const TOP_VIEWS     = {{ top_views | tojson }};
+
+// Activity chart
+new Chart(document.getElementById('activityChart'), {
+  type: 'line',
+  data: {
+    labels: DATES,
+    datasets: [
+      {
+        label: "Ro'yxatdan o'tishlar",
+        data: REG,
+        borderColor: '#0d6efd',
+        backgroundColor: 'rgba(13,110,253,.1)',
+        fill: true, tension: .4, pointRadius: 3,
+      },
+      {
+        label: "Ko'rishlar",
+        data: VIEWS,
+        borderColor: '#20c997',
+        backgroundColor: 'rgba(32,201,151,.1)',
+        fill: true, tension: .4, pointRadius: 3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { position: 'top' } },
+    scales: { y: { beginAtZero: true } }
+  }
+});
+
+// Hourly chart
+new Chart(document.getElementById('hourlyChart'), {
+  type: 'bar',
+  data: {
+    labels: HOURLY_LABELS,
+    datasets: [{
+      label: 'Ko\'rishlar soni',
+      data: HOURLY_DATA,
+      backgroundColor: 'rgba(255,193,7,.7)',
+      borderColor: '#ffc107',
+      borderWidth: 1,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true } }
+  }
+});
+
+// Language pie
+new Chart(document.getElementById('langChart'), {
+  type: 'doughnut',
+  data: {
+    labels: LANG_LABELS.map(l => l === 'uz' ? "O'zbek 🇺🇿" : l === 'ru' ? "Rus 🇷🇺" : "Ingliz 🇬🇧"),
+    datasets: [{
+      data: LANG_DATA,
+      backgroundColor: ['#198754', '#0d6efd', '#dc3545'],
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'right' } }
+  }
+});
+
+// Top movies
+new Chart(document.getElementById('topChart'), {
+  type: 'bar',
+  data: {
+    labels: TOP_TITLES,
+    datasets: [{
+      label: 'Ko\'rishlar',
+      data: TOP_VIEWS,
+      backgroundColor: 'rgba(13,110,253,.7)',
+      borderColor: '#0d6efd',
+      borderWidth: 1,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { x: { beginAtZero: true } }
+  }
+});
+</script>
+{% endblock %}

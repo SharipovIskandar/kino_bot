@@ -12,15 +12,18 @@ from bot.config import settings
 from bot.database.connection import close_db
 
 # ── Middlewares ───────────────────────────────────────────────────────────────
+from bot.middlewares.bot_filter import BotFilterMiddleware
 from bot.middlewares.database import DatabaseMiddleware
 from bot.middlewares.user_register import UserRegisterMiddleware
 from bot.middlewares.ban_check import BanCheckMiddleware
+from bot.middlewares.subscription import SubscriptionMiddleware
 from bot.middlewares.throttling import ThrottlingMiddleware
 
 # ── Handlers ──────────────────────────────────────────────────────────────────
 from bot.handlers.user.start import router as start_router
 from bot.handlers.user.search import router as search_router
 from bot.handlers.user.subscription import router as subscription_router
+from bot.handlers.user.fallback import router as fallback_router
 from bot.handlers.channel_post import router as channel_post_router
 from bot.handlers.admin.panel import router as admin_panel_router
 from bot.handlers.admin.channels import router as admin_channels_router
@@ -48,6 +51,22 @@ def setup_logging() -> None:
     )
 
 
+async def run_admin_server() -> None:
+    import uvicorn
+    from admin.main import app as admin_app
+    config = uvicorn.Config(
+        app=admin_app,
+        host="0.0.0.0",
+        port=settings.admin_port,
+        log_level="warning",
+    )
+    server = uvicorn.Server(config=config)
+    # Signal handlerlarni o'chiramiz — dp.start_polling() o'zi boshqaradi
+    server.install_signal_handlers = lambda: None
+    logger.info(f"Admin panel http://0.0.0.0:{settings.admin_port} portida ishga tushmoqda...")
+    await server.serve()
+
+
 async def main() -> None:
     setup_logging()
     logger.info("KinoBot ishga tushmoqda...")
@@ -64,6 +83,10 @@ async def main() -> None:
     dp = Dispatcher(storage=storage)
 
     # ── Middlewares (tartib muhim!) ───────────────────────────────────────────
+    # BotFilter birinchi — bot va group eventlarni darhol to'xtatadi
+    dp.message.middleware(BotFilterMiddleware())
+    dp.callback_query.middleware(BotFilterMiddleware())
+
     dp.message.middleware(DatabaseMiddleware())
     dp.callback_query.middleware(DatabaseMiddleware())
 
@@ -72,6 +95,9 @@ async def main() -> None:
 
     dp.message.middleware(BanCheckMiddleware())
     dp.callback_query.middleware(BanCheckMiddleware())
+
+    dp.message.middleware(SubscriptionMiddleware())
+    dp.callback_query.middleware(SubscriptionMiddleware())
 
     dp.message.middleware(ThrottlingMiddleware(redis=redis))
 
@@ -90,6 +116,8 @@ async def main() -> None:
     dp.include_router(admin_broadcast_router)
     dp.include_router(admin_moderation_router)
     dp.include_router(admin_movies_router)
+    # fallback eng oxirida — boshqa hech narsa uslambagan xabarlar uchun
+    dp.include_router(fallback_router)
 
     # ── Global Error Handler ─────────────────────────────────────────────────
     from aiogram.types import ErrorEvent
@@ -111,14 +139,30 @@ async def main() -> None:
     # ── Bot commandlarini Telegram'ga ro'yxatdan o'tkazish ───────────────────
     from aiogram.types import BotCommand, BotCommandScopeDefault, BotCommandScopeChat
 
-    # Barcha userlarga — faqat asosiy buyruqlar
+    # Barcha userlarga — asosiy buyruqlar
     user_commands = [
-        BotCommand(command="start",    description="Botni boshlash"),
-        BotCommand(command="search",   description="Kino qidirish"),
-        BotCommand(command="language", description="Tilni o'zgartirish"),
-        BotCommand(command="help",     description="Yordam"),
+        BotCommand(command="start",  description="Botni boshlash"),
+        BotCommand(command="search", description="Kino qidirish"),
+        BotCommand(command="help",   description="Yordam"),
     ]
     await bot.set_my_commands(user_commands, scope=BotCommandScopeDefault())
+
+    # Bot tavsifi — /start bosilmasdan oldin ko'rinadigan matn
+    bot_description = (
+        "🎬 KinoBot — O'zbek kinolar boti\n\n"
+        "Bu bot orqali minglab kinolarni bepul tomosha qilishingiz mumkin!\n\n"
+        "📌 Foydalanish:\n"
+        "• Kino kodini yuboring → kino darhol keladi\n"
+        "• /search — kino nomini qidirish\n\n"
+        "▶️ Boshlash uchun Start tugmasini bosing!"
+    )
+    bot_short_description = "🎬 Kino kodini yuboring — kino darhol keladi!"
+
+    try:
+        await bot.set_my_description(bot_description)
+        await bot.set_my_short_description(bot_short_description)
+    except Exception:
+        pass  # Eski Telegram versiyalarida bu API bo'lmasligi mumkin
 
     # Super adminlarga — to'liq buyruqlar ro'yxati
     admin_commands = user_commands + [
@@ -138,11 +182,12 @@ async def main() -> None:
 
     logger.info("Bot muvaffaqiyatli ishga tushdi!")
 
+    coroutines = [dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())]
+    if settings.run_admin:
+        coroutines.append(run_admin_server())
+
     try:
-        await dp.start_polling(
-            bot,
-            allowed_updates=dp.resolve_used_update_types(),
-        )
+        await asyncio.gather(*coroutines)
     finally:
         logger.info("Bot to'xtatilmoqda...")
         await bot.session.close()

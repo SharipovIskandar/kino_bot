@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Kinolar — KinoBot Admin{% endblock %}
+{% block page_title %}Kinolar{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+  <div class="card-body py-2">
+    <form method="get" class="row g-2 align-items-center">
+      <div class="col-md-5">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" name="q" class="form-control" placeholder="Kod yoki nom bo'yicha qidirish..." value="{{ q }}">
+        </div>
+      </div>
+      <div class="col-auto">
+        <select name="active" class="form-select">
+          <option value="all" {% if active == 'all' %}selected{% endif %}>Hammasi</option>
+          <option value="active" {% if active == 'active' %}selected{% endif %}>Faol</option>
+          <option value="inactive" {% if active == 'inactive' %}selected{% endif %}>Nofaol</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Qidirish</button>
+        <a href="/movies" class="btn btn-outline-secondary ms-1">Tozalash</a>
+      </div>
+      <div class="col-auto ms-auto">
+        <a href="/movies/new" class="btn btn-success">
+          <i class="bi bi-plus-lg me-1"></i>Yangi kino
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <span class="fw-semibold">Jami: <strong>{{ total }}</strong> ta</span>
+    <small class="text-muted">{{ (page-1)*20 + 1 }}–{{ [page*20, total] | min }} ko'rsatilmoqda</small>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Kod</th>
+            <th>Nomi</th>
+            <th>Yil</th>
+            <th>IMDb</th>
+            <th>Ko'rishlar</th>
+            <th>Holat</th>
+            <th>Qo'shilgan</th>
+            <th class="text-end">Amallar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for movie in movies %}
+          <tr>
+            <td><code class="fw-bold">{{ movie.code }}</code></td>
+            <td>
+              <div class="fw-medium">{{ movie.title_uz or movie.title_ru or '—' }}</div>
+              {% if movie.title_ru and movie.title_uz %}<small class="text-muted">{{ movie.title_ru }}</small>{% endif %}
+            </td>
+            <td>{{ movie.year or '—' }}</td>
+            <td>
+              {% if movie.imdb_rating %}
+              <span class="badge bg-warning text-dark">⭐ {{ movie.imdb_rating }}</span>
+              {% else %}—{% endif %}
+            </td>
+            <td><span class="badge bg-primary">{{ movie.view_count }}</span></td>
+            <td>
+              {% if movie.is_active %}
+              <span class="badge bg-success">Faol</span>
+              {% else %}
+              <span class="badge bg-secondary">Nofaol</span>
+              {% endif %}
+            </td>
+            <td class="text-muted small">{{ movie.created_at.strftime('%d.%m.%Y') }}</td>
+            <td class="text-end">
+              <div class="btn-group btn-group-sm">
+                <a href="/movies/{{ movie.id }}/edit" class="btn btn-outline-primary" title="Tahrirlash">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <form method="post" action="/movies/{{ movie.id }}/toggle" class="d-inline">
+                  <button class="btn {% if movie.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}"
+                          title="{% if movie.is_active %}O'chirish{% else %}Faollashtirish{% endif %}">
+                    <i class="bi {% if movie.is_active %}bi-eye-slash{% else %}bi-eye{% endif %}"></i>
+                  </button>
+                </form>
+                <form method="post" action="/movies/{{ movie.id }}/delete"
+                      onsubmit="return confirm('{{ movie.code }} ni o\'chirishni tasdiqlaysizmi?')">
+                  <button class="btn btn-outline-danger" title="O'chirish">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="8" class="text-center text-muted py-4">Kinolar topilmadi</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% if total_pages > 1 %}
+  <div class="card-footer bg-white">
+    <nav>
+      <ul class="pagination pagination-sm mb-0 justify-content-center">
+        <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ page-1 }}&q={{ q }}&active={{ active }}">‹</a>
+        </li>
+        {% for p in range([1, page-2]|max, [total_pages+1, page+3]|min) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+          <a class="page-link" href="?page={{ p }}&q={{ q }}&active={{ active }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+        <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ page+1 }}&q={{ q }}&active={{ active }}">›</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
+import warnings
 from typing import List
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import computed_field
+from pydantic import computed_field, model_validator
 
 
 class Settings(BaseSettings):
@@ -75,6 +76,29 @@ class Settings(BaseSettings):
     @property
     def webhook_url(self) -> str:
         return f"{self.webhook_host}{self.webhook_path}"
+
+    # ── Admin Web Panel ───────────────────────────────────────────────────
+    admin_web_password: str = "change_me_in_env"
+    admin_secret_key: str = "change_this_jwt_secret_key"
+    admin_port: int = 8000
+    # HTTPS orqali ishlaganda True qiling (production)
+    admin_cookie_secure: bool = False
+    # False qilish: bot.main admin serverni ishga tushirmaydi (Docker'da alohida service bo'lganda)
+    run_admin: bool = True
+
+    @model_validator(mode='after')
+    def check_secret_defaults(self) -> 'Settings':
+        if self.admin_web_password == "change_me_in_env":
+            warnings.warn(
+                "SECURITY: ADMIN_WEB_PASSWORD is set to default value! Change it in .env",
+                stacklevel=2,
+            )
+        if self.admin_secret_key == "change_this_jwt_secret_key":
+            warnings.warn(
+                "SECURITY: ADMIN_SECRET_KEY is set to default value! Change it in .env",
+                stacklevel=2,
+            )
+        return self
 
 
 # Global settings instance

@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from typing import Optional, List
 
 from sqlalchemy import select, update, func, or_, desc
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -79,7 +80,7 @@ async def upsert_movie(
         for key, value in kwargs.items():
             if hasattr(movie, key) and value is not None:
                 setattr(movie, key, value)
-        await session.commit()
+        await session.flush()
         return movie, False
     else:
         # Yaratish
@@ -90,7 +91,7 @@ async def upsert_movie(
             **kwargs,
         )
         session.add(movie)
-        await session.commit()
+        await session.flush()
         await session.refresh(movie)
         return movie, True
 
@@ -102,35 +103,28 @@ async def delete_movie(session: AsyncSession, code: str) -> bool:
     if not movie:
         return False
     movie.is_active = False
-    await session.commit()
+    await session.flush()
     return True
 
 
 async def record_view(
     session: AsyncSession, movie_id: int, user_id: int
 ) -> None:
-    """Ko'rish statistikasini saqlash (takrorlanishdan himoyalangan)"""
-    # Avval shu user shu kinoni ko'rgan-ko'rmaganini tekshiramiz
-    existing = await session.execute(
-        select(MovieView).where(
-            MovieView.movie_id == movie_id,
-            MovieView.user_id == user_id
+    """Ko'rish statistikasini saqlash (takroriy ko'rishlar hisoblanmaydi)"""
+    # INSERT ON CONFLICT DO NOTHING — race condition xavfsiz va atomik
+    stmt = (
+        pg_insert(MovieView)
+        .values(movie_id=movie_id, user_id=user_id)
+        .on_conflict_do_nothing(constraint="uq_movie_views_user_movie")
+    )
+    result = await session.execute(stmt)
+    # Faqat yangi yozuv qo'shilganda view_count oshiriladi
+    if result.rowcount > 0:
+        await session.execute(
+            update(Movie)
+            .where(Movie.id == movie_id)
+            .values(view_count=Movie.view_count + 1)
         )
-    )
-    if existing.scalar_one_or_none():
-        return
-
-    # movie_views jadvaliga yozish
-    view = MovieView(movie_id=movie_id, user_id=user_id)
-    session.add(view)
-    
-    # view_count oshirish
-    await session.execute(
-        update(Movie)
-        .where(Movie.id == movie_id)
-        .values(view_count=Movie.view_count + 1)
-    )
-    await session.commit()
 
 
 async def get_movies_paginated(

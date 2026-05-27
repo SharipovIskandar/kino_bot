@@ -7,6 +7,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      - RUN_ADMIN=false
     depends_on:
       postgres:
         condition: service_healthy
@@ -14,6 +16,22 @@ services:
         condition: service_healthy
     volumes:
       - ./logs:/app/logs
+    networks:
+      - kinobot_net
+
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    container_name: kinobot_admin
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${ADMIN_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - kinobot_net
 

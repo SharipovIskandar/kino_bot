@@ -11,9 +11,25 @@ from bot.keyboards.user_kb import build_subscription_keyboard
 from bot.services.i18n import get_text
 
 # Buyruqlar — obuna tekshiruvisiz o'tkaziladi
-BYPASS_COMMANDS = {"/start", "/help", "/language"}
+BYPASS_COMMANDS = {"/start", "/help"}
 # Callbacklar — obuna tekshiruvisiz o'tkaziladi
-BYPASS_CALLBACKS = {"check_sub", "lang_"}
+BYPASS_CALLBACKS = {"check_sub"}
+
+
+async def _get_invite_links(bot, channels: list, session=None) -> dict:
+    """Yopiq kanallar uchun invite link generatsiya qilish va DB'ga saqlash"""
+    urls = {}
+    for ch in channels:
+        if not ch.invite_link and not ch.channel_username:
+            try:
+                link = await bot.export_chat_invite_link(ch.channel_id)
+                urls[ch.channel_id] = link
+                # Keyingi safar qayta generatsiya qilmaslik uchun DB'ga saqlaymiz
+                if session is not None:
+                    ch.invite_link = link
+            except Exception:
+                pass
+    return urls
 
 
 class SubscriptionMiddleware(BaseMiddleware):
@@ -42,6 +58,10 @@ class SubscriptionMiddleware(BaseMiddleware):
 
         # Super admin va adminlar obunasiz ishlay oladi
         if tg_user.id in settings.super_admin_list:
+            return await handler(event, data)
+
+        # DB admini ham (Admin jadvali) bypass
+        if db_user and db_user.admin_profile is not None:
             return await handler(event, data)
 
         # Bypass buyruqlari
@@ -74,7 +94,8 @@ class SubscriptionMiddleware(BaseMiddleware):
 
         # Obuna bo'lmagan kanallar bor — xabar yuboramiz
         text = get_text("subscription-required", lang)
-        keyboard = build_subscription_keyboard(not_subscribed, lang)
+        channel_urls = await _get_invite_links(bot, not_subscribed, session=session)
+        keyboard = build_subscription_keyboard(not_subscribed, lang, channel_urls=channel_urls)
 
         if isinstance(event, Message):
             await event.answer(text, reply_markup=keyboard)

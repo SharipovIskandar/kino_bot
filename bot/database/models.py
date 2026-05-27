@@ -6,7 +6,7 @@ from typing import Optional, List
 
 from sqlalchemy import (
     BigInteger, Boolean, DateTime, Enum, Float, ForeignKey,
-    Integer, String, Text, func, ARRAY,
+    Integer, String, Text, UniqueConstraint, func, ARRAY,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -230,6 +230,9 @@ class MovieGenre(Base):
 
 class MovieView(Base):
     __tablename__ = "movie_views"
+    __table_args__ = (
+        UniqueConstraint("user_id", "movie_id", name="uq_movie_views_user_movie"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)

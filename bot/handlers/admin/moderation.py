@@ -44,6 +44,7 @@ def _format_user_info(user: User, lang: str) -> str:
 @router.message(F.text.startswith("/ban"))
 async def cmd_ban_start(
     message: Message,
+    session: AsyncSession,
     db_user: User,
     lang: str,
     state: FSMContext,
@@ -59,7 +60,7 @@ async def cmd_ban_start(
         try:
             target_id = int(parts[1])
             reason = parts[2] if len(parts) > 2 else "Sabab ko'rsatilmagan"
-            await _do_ban(message, target_id, reason, lang)
+            await _do_ban(message, target_id, reason, lang, session)
             return
         except ValueError:
             pass
@@ -104,12 +105,9 @@ async def _do_ban(
     target_id: int,
     reason: str,
     lang: str,
-    session: AsyncSession = None,
+    session: AsyncSession,
 ) -> None:
     """Ban logikasi"""
-    if session is None:
-        return
-
     # Super adminni ban qila olmaymiz
     if target_id in settings.super_admin_list:
         await message.answer("🚫 Super adminni ban qilib bo'lmaydi!")
@@ -140,6 +138,7 @@ async def _do_ban(
 @router.message(F.text.startswith("/unban"))
 async def cmd_unban_start(
     message: Message,
+    session: AsyncSession,
     db_user: User,
     lang: str,
     state: FSMContext,
@@ -153,7 +152,7 @@ async def cmd_unban_start(
     if len(parts) >= 2:
         try:
             target_id = int(parts[1])
-            await _do_unban(message, target_id, lang)
+            await _do_unban(message, target_id, lang, session)
             return
         except ValueError:
             pass
@@ -183,11 +182,8 @@ async def _do_unban(
     message: Message,
     target_id: int,
     lang: str,
-    session: AsyncSession = None,
+    session: AsyncSession,
 ) -> None:
-    if session is None:
-        return
-
     user = await get_user(session, target_id)
     if not user:
         await message.answer(get_text("user-not-found", lang))

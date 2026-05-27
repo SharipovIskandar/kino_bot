@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}{% if movie %}Kino tahrirlash{% else %}Yangi kino{% endif %} — KinoBot Admin{% endblock %}
+{% block page_title %}{% if movie %}Kino tahrirlash: {{ movie.code }}{% else %}Yangi kino qo'shish{% endif %}{% endblock %}
+
+{% block content %}
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-x-circle me-2"></i>{{ error }}</div>
+{% endif %}
+
+<form method="post">
+  <div class="row g-3">
+    <!-- Asosiy ma'lumotlar -->
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header fw-semibold">
+          <i class="bi bi-info-circle me-2 text-primary"></i>Asosiy ma'lumotlar
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label fw-medium">Kino kodi *</label>
+              <input type="text" name="code" class="form-control text-uppercase"
+                     value="{{ movie.code if movie else '' }}"
+                     {% if movie %}readonly{% endif %} required
+                     placeholder="Masalan: 1234">
+              {% if movie %}<small class="text-muted">Kodni o'zgartirish mumkin emas</small>{% endif %}
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-medium">Kanal message ID *</label>
+              <input type="number" name="channel_message_id" class="form-control"
+                     value="{{ movie.channel_message_id if movie else '' }}" required>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label fw-medium">Yil</label>
+              <input type="number" name="year" class="form-control"
+                     value="{{ movie.year or '' }}" min="1900" max="2030">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label fw-medium">Davomiyligi (min)</label>
+              <input type="number" name="duration" class="form-control"
+                     value="{{ movie.duration or '' }}" min="1">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label fw-medium">Yosh chegarasi</label>
+              <input type="text" name="age_rating" class="form-control"
+                     value="{{ movie.age_rating or '' }}" placeholder="12+">
+            </div>
+          </div>
+          <div class="row g-3 mt-0">
+            <div class="col-md-4">
+              <label class="form-label fw-medium">Mamlakat</label>
+              <input type="text" name="country" class="form-control"
+                     value="{{ movie.country or '' }}" placeholder="AQSh, Koreya...">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-medium">Rejissyor</label>
+              <input type="text" name="director" class="form-control"
+                     value="{{ movie.director or '' }}">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-medium">Til turi</label>
+              <select name="language_type" class="form-select">
+                <option value="">— Tanlanmagan —</option>
+                {% for lt in language_types %}
+                <option value="{{ lt.value }}"
+                        {% if movie and movie.language_type == lt %}selected{% endif %}>
+                  {{ lt.value }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="row g-3 mt-0">
+            <div class="col-12">
+              <label class="form-label fw-medium">Aktyorlar</label>
+              <input type="text" name="cast" class="form-control"
+                     value="{{ movie.cast or '' }}" placeholder="Vergul bilan ajrating">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nomlar -->
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header fw-semibold">
+          <i class="bi bi-translate me-2 text-success"></i>Nomlar
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">🇺🇿 O'zbekcha</label>
+              <input type="text" name="title_uz" class="form-control"
+                     value="{{ movie.title_uz or '' }}">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">🇷🇺 Ruscha</label>
+              <input type="text" name="title_ru" class="form-control"
+                     value="{{ movie.title_ru or '' }}">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">🇬🇧 Inglizcha</label>
+              <input type="text" name="title_en" class="form-control"
+                     value="{{ movie.title_en or '' }}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tavsiflar -->
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header fw-semibold">
+          <i class="bi bi-card-text me-2 text-info"></i>Tavsif
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">🇺🇿 O'zbekcha</label>
+              <textarea name="description_uz" class="form-control" rows="4">{{ movie.description_uz or '' }}</textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">🇷🇺 Ruscha</label>
+              <textarea name="description_ru" class="form-control" rows="4">{{ movie.description_ru or '' }}</textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">🇬🇧 Inglizcha</label>
+              <textarea name="description_en" class="form-control" rows="4">{{ movie.description_en or '' }}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reytinglar va janrlar -->
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header fw-semibold">
+          <i class="bi bi-star me-2 text-warning"></i>Reytinglar
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label">IMDb reytingi</label>
+              <input type="number" name="imdb_rating" class="form-control"
+                     step="0.1" min="0" max="10"
+                     value="{{ movie.imdb_rating or '' }}" placeholder="8.5">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Kinopoisk reytingi</label>
+              <input type="number" name="kinopoisk_rating" class="form-control"
+                     step="0.1" min="0" max="10"
+                     value="{{ movie.kinopoisk_rating or '' }}" placeholder="8.2">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header fw-semibold">
+          <i class="bi bi-tags me-2 text-purple"></i>Janrlar
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            {% set selected_ids = movie.genres | map(attribute='id') | list if movie else [] %}
+            {% for genre in genres %}
+            <div class="col-6 col-xl-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="genre_ids"
+                       value="{{ genre.id }}" id="genre_{{ genre.id }}"
+                       {% if genre.id in selected_ids %}checked{% endif %}>
+                <label class="form-check-label small" for="genre_{{ genre.id }}">
+                  {{ genre.name_uz }}
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="col-12 d-flex gap-2">
+      <button type="submit" class="btn btn-primary px-4">
+        <i class="bi bi-check-lg me-2"></i>{% if movie %}Saqlash{% else %}Qo'shish{% endif %}
+      </button>
+      <a href="/movies" class="btn btn-outline-secondary">Bekor qilish</a>
+    </div>
+  </div>
+</form>
+{% endblock %}

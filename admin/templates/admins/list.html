@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}Adminlar — KinoBot Admin{% endblock %}
+{% block page_title %}Adminlar boshqaruvi{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <!-- Admins table -->
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+        <span><i class="bi bi-shield-check text-primary me-2"></i>Adminlar ro'yxati</span>
+        <span class="badge bg-primary">{{ admins|length }} ta</span>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Telegram ID</th>
+                <th>Ism</th>
+                <th>Username</th>
+                <th>Rol</th>
+                <th>Qo'shilgan</th>
+                {% if admin.get('role') == 'super_admin' %}
+                <th class="text-end">Amallar</th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in admins %}
+              <tr>
+                <td><code>{{ a.user.telegram_id }}</code></td>
+                <td class="fw-medium">{{ a.user.full_name }}</td>
+                <td>{% if a.user.username %}<span class="text-primary">@{{ a.user.username }}</span>{% else %}—{% endif %}</td>
+                <td>
+                  <span class="badge badge-role-{{ a.role.value }}">{{ a.role.value }}</span>
+                </td>
+                <td class="text-muted small">{{ a.added_at.strftime('%d.%m.%Y') }}</td>
+                {% if admin.get('role') == 'super_admin' %}
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal"
+                            data-bs-target="#roleModal"
+                            data-id="{{ a.user.telegram_id }}"
+                            data-role="{{ a.role.value }}">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    {% if a.user.telegram_id != admin.get('sub')|int %}
+                    <form method="post" action="/admins/{{ a.user.telegram_id }}/remove"
+                          onsubmit="return confirm('{{ a.user.full_name }} ni adminlikdan olib tashlash?')">
+                      <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                    {% endif %}
+                  </div>
+                </td>
+                {% endif %}
+              </tr>
+              {% else %}
+              <tr><td colspan="6" class="text-center text-muted py-3">Adminlar yo'q</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add admin form -->
+  {% if admin.get('role') == 'super_admin' %}
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-person-plus text-success me-2"></i>Yangi admin qo'shish
+      </div>
+      <div class="card-body">
+        <form method="post" action="/admins/add">
+          <div class="mb-3">
+            <label class="form-label fw-medium">Telegram ID *</label>
+            <input type="number" name="telegram_id" class="form-control"
+                   placeholder="123456789" required>
+            <small class="text-muted">Foydalanuvchi avval botga /start bosgan bo'lishi kerak</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-medium">Rol *</label>
+            <select name="role" class="form-select" required>
+              {% for role in roles %}
+              {% if role.value != 'super_admin' %}
+              <option value="{{ role.value }}">{{ role.value }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-plus-lg me-2"></i>Qo'shish
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-info-circle text-info me-2"></i>Rol huquqlari
+      </div>
+      <div class="card-body small">
+        <p class="fw-medium mb-1">super_admin</p>
+        <p class="text-muted mb-2">Barcha huquqlar + adminlarni boshqarish</p>
+        <p class="fw-medium mb-1">admin</p>
+        <p class="text-muted mb-2">Kinolar, foydalanuvchilar, broadcast, kanallar</p>
+        <p class="fw-medium mb-1">moderator</p>
+        <p class="text-muted mb-0">Kinolar ko'rish + foydalanuvchi ban/unban</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Change role modal -->
+<div class="modal fade" id="roleModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Rolni o'zgartirish</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="post" id="roleForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label fw-medium">Yangi rol</label>
+            <select name="role" class="form-select">
+              {% for role in roles %}
+              {% if role.value != 'super_admin' %}
+              <option value="{{ role.value }}">{{ role.value }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const roleModal = document.getElementById('roleModal');
+if (roleModal) {
+  roleModal.addEventListener('show.bs.modal', function(e) {
+    const btn = e.relatedTarget;
+    const id = btn.dataset.id;
+    const role = btn.dataset.role;
+    const form = document.getElementById('roleForm');
+    form.action = `/admins/${id}/role`;
+    form.querySelector('select[name=role]').value = role;
+  });
+}
+</script>
+{% endblock %}

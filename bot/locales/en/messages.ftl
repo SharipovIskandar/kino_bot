@@ -15,21 +15,16 @@ welcome =
     👋 Hello, <b>{ $name }</b>!
 
     🎬 Welcome to <b>KinoBot</b>!
-    Find any movie here.
 
-    💡 Send a movie code or tap <b>🔍 Search</b>.
+    With this bot you can:
+    🎥 Get any movie by its code
+    🔍 Search movies by title
 
-welcome-back =
-    👋 Welcome back, <b>{ $name }</b>!
+    📌 <b>How to use:</b>
+    • Send a movie code (e.g. <code>1234</code>) — the movie arrives instantly
+    • Or tap <b>🔍 Search</b> to find by title
 
-    💡 Send a movie code or tap <b>🔍 Search</b>.
-
-choose-language = 🌐 Choose language / Выберите язык / Tilni tanlang:
-language-changed = ✅ Language changed → <b>English</b>
-
-btn-language-uz = 🇺🇿 O'zbek
-btn-language-ru = 🇷🇺 Русский
-btn-language-en = 🇺🇸 English
+    ❓ Need help? Type /help
 
 # ── Help ────────────────────────────
 help =
@@ -41,14 +36,21 @@ help =
     🔍 <b>Search by title:</b>
     Tap 🔍 Search or type /search, then enter a movie title.
 
-    🌐 <b>Change language:</b>
-    Tap 🌐 Language or type /language.
-
     📌 <b>Commands:</b>
     /start — Restart the bot
     /search — Search for a movie
-    /language — Change language
     /help — This guide
+
+# ── Unknown message ──────────────────
+unknown-command =
+    ❓ This command does not exist.
+
+    📌 Available commands:
+    /start — Start the bot
+    /search — Search for a movie
+    /help — Help
+
+unknown-message = 💡 Send a movie code (e.g. <code>1234</code>) or tap <b>🔍 Search</b>.
 
 # ── Subscription ────────────────────
 subscription-required =

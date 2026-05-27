@@ -100,6 +100,12 @@ async def process_channel_add(
         title = chat.title or str(channel_id)
         username = chat.username
         invite_link = chat.invite_link
+        # Yopiq kanal uchun invite link yo'q bo'lsa — generatsiya qilish
+        if not invite_link and not username:
+            try:
+                invite_link = await bot.export_chat_invite_link(channel_id)
+            except Exception:
+                pass
     except Exception:
         await message.answer(get_text("channel-not-found", lang))
         return

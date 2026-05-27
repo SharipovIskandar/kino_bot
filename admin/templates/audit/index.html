@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Audit Log — KinoBot Admin{% endblock %}
+{% block page_title %}Admin harakatlari (Audit Log){% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+  <div class="card-body py-2">
+    <form method="get" class="row g-2 align-items-center">
+      <div class="col-md-4">
+        <select name="action" class="form-select">
+          <option value="">— Barcha amallar —</option>
+          {% for atype in action_types %}
+          <option value="{{ atype }}" {% if current_action == atype %}selected{% endif %}>
+            {{ atype }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person"></i></span>
+          <input type="text" name="admin_id" class="form-control"
+                 placeholder="Admin Telegram ID" value="{{ current_admin }}">
+        </div>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="/audit" class="btn btn-outline-secondary ms-1">Tozalash</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white fw-semibold">
+    Jami: <strong>{{ total }}</strong> ta harakat
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Admin ID</th>
+            <th>Amal turi</th>
+            <th>Maqsad</th>
+            <th>Tafsilotlar</th>
+            <th>Vaqt</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for action in actions %}
+          <tr>
+            <td class="text-muted">{{ action.id }}</td>
+            <td><code>{{ action.admin_telegram_id }}</code></td>
+            <td>
+              <span class="badge
+                {% if 'ban' in action.action_type %}bg-danger
+                {% elif 'delete' in action.action_type or 'remove' in action.action_type %}bg-warning text-dark
+                {% elif 'add' in action.action_type or 'create' in action.action_type %}bg-success
+                {% elif 'update' in action.action_type or 'edit' in action.action_type %}bg-info
+                {% else %}bg-secondary{% endif %}">
+                {{ action.action_type }}
+              </span>
+            </td>
+            <td>{% if action.target_id %}<code>{{ action.target_id }}</code>{% else %}—{% endif %}</td>
+            <td>
+              {% if action.details %}
+              <button class="btn btn-sm btn-outline-secondary py-0 px-1" data-bs-toggle="collapse"
+                      data-bs-target="#details_{{ action.id }}">
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div class="collapse mt-1" id="details_{{ action.id }}">
+                <pre class="small bg-light p-2 rounded mb-0">{{ action.details | tojson(indent=2) }}</pre>
+              </div>
+              {% else %}—{% endif %}
+            </td>
+            <td class="text-muted small">{{ action.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="text-center text-muted py-4">Harakatlar yo'q</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% if total_pages > 1 %}
+  <div class="card-footer bg-white">
+    <nav>
+      <ul class="pagination pagination-sm mb-0 justify-content-center">
+        <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ page-1 }}&action={{ current_action }}&admin_id={{ current_admin }}">‹</a>
+        </li>
+        {% for p in range([1, page-2]|max, [total_pages+1, page+3]|min) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+          <a class="page-link" href="?page={{ p }}&action={{ current_action }}&admin_id={{ current_admin }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+        <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ page+1 }}&action={{ current_action }}&admin_id={{ current_admin }}">›</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
