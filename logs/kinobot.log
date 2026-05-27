@@ -1,0 +1,480 @@
+2026-04-19 02:02:20.391 | INFO     | __main__:main:52 - KinoBot ishga tushmoqda...
+2026-04-19 02:02:24.032 | INFO     | __main__:main:104 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 02:04:35.450 | INFO     | __main__:main:112 - Bot to'xtatilmoqda...
+2026-04-19 02:04:38.782 | INFO     | __main__:main:52 - KinoBot ishga tushmoqda...
+2026-04-19 02:04:39.284 | INFO     | __main__:main:104 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 02:07:45.827 | INFO     | __main__:main:112 - Bot to'xtatilmoqda...
+2026-04-19 02:07:48.567 | INFO     | __main__:main:52 - KinoBot ishga tushmoqda...
+2026-04-19 02:07:49.398 | INFO     | __main__:main:104 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 02:09:39.548 | INFO     | __main__:main:112 - Bot to'xtatilmoqda...
+2026-04-19 02:09:53.231 | INFO     | __main__:main:52 - KinoBot ishga tushmoqda...
+2026-04-19 02:09:53.761 | INFO     | __main__:main:104 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 02:11:38.531 | INFO     | __main__:main:52 - KinoBot ishga tushmoqda...
+2026-04-19 02:11:39.255 | INFO     | __main__:main:104 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 02:14:00.102 | INFO     | bot.services.movie_sync:sync_movies_from_channel:44 - Sync boshlandi. Kanal: -1003952694000
+2026-04-19 02:14:00.104 | INFO     | bot.services.movie_sync:sync_movies_from_channel:129 - Sync yakunlandi: added=0, updated=0, skipped=0
+2026-04-19 02:29:38.473 | INFO     | __main__:main:112 - Bot to'xtatilmoqda...
+2026-04-19 02:51:17.074 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 02:51:17.619 | INFO     | __main__:main:138 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 02:52:07.688 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 02:52:08.126 | INFO     | __main__:main:138 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 03:18:25.086 | INFO     | __main__:main:146 - Bot to'xtatilmoqda...
+2026-04-19 03:31:40.448 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 03:31:41.821 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 03:34:53.974 | INFO     | bot.handlers.channel_post:handle_new_channel_post:68 - Kanal post: #1 qo'shildi (msg_id=2)
+2026-04-19 03:35:22.573 | ERROR    | __main__:global_error_handler:98 - Kutilmagan xato: Telegram server says - Bad Request: can't use file of type Thumbnail as Photo
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/main.py", line 154, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x79b2695f4860>
+    │       └ <function run at 0x79b26e665260>
+    └ <module 'asyncio' from '/usr/lib/python3.12/asyncio/__init__.py'>
+
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x79b2696e9a80>
+           │      └ <function Runner.run at 0x79b26df08540>
+           └ <asyncio.runners.Runner object at 0x79b26eb9b1a0>
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/empty/Documents/pet_projects/kinoBot/bot/main.py:142> wait_for=<Fut...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x79b26df06160>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x79b26eb9b1a0>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x79b26df060c0>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x79b26df07ec0>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x79b26e5ba520>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+                     │    │           │    │         └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,)}
+                     │    │           │    └ Update(update_id=182300312, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                     │    │           └ <aiogram.client.bot.Bot object at 0x79b2698526f0>
+                     │    └ <function Dispatcher.feed_update at 0x79b26a86bc40>
+                     └ <Dispatcher '0x79b269cdd460'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+                     │    │      └ <function TelegramEventObserver.wrap_outer_middleware at 0x79b26a86a3e0>
+                     │    └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x79b26960fbc0>
+                     └ <Dispatcher '0x79b269cdd460'>
+> File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                 │       └ Update(update_id=182300312, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                 └ functools.partial(<aiogram.dispatcher.middlewares.user_context.UserContextMiddleware object at 0x79b26960fce0>, functools.par...
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 56, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                 │       └ Update(update_id=182300312, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                 └ functools.partial(<aiogram.fsm.middleware.FSMContextMiddleware object at 0x79b26960fd40>, <function TelegramEventObserver.tri...
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                 │       └ Update(update_id=182300312, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                 └ <function TelegramEventObserver.trigger at 0x79b26888a700>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                 │             └ Update(update_id=182300312, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                 └ <function CallableObject.call at 0x79b26888ab60>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+                 └ functools.partial(<bound method Dispatcher._listen_update of <Dispatcher '0x79b269cdd460'>>, Update(update_id=182300312, mess...
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+                 │    │                           │                  │        └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                 │    │                           │                  └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 │    │                           └ 'callback_query'
+                 │    └ <function Router.propagate_event at 0x79b26a86b240>
+                 └ <Dispatcher '0x79b269cdd460'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                 │        │                     │               └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x79b26888ade0>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x79b26a86a3e0>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x79b26960ee10>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x79b26a86b2e0>
+                 └ <Dispatcher '0x79b269cdd460'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+                     │      │                           │                  │        └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                     │      │                           │                  └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                     │      │                           └ 'callback_query'
+                     │      └ <function Router.propagate_event at 0x79b26a86b240>
+                     └ <Router 'search'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                 │        │                     │               └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x79b26888bec0>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x79b26a86a3e0>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x79b269786150>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x79b26a86b2e0>
+                 └ <Router 'search'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+                     │        │       │        └ {'dispatcher': <Dispatcher '0x79b269cdd460'>, 'bots': (<aiogram.client.bot.Bot object at 0x79b2698526f0>,), 'bot': <aiogram.c...
+                     │        │       └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                     │        └ <function TelegramEventObserver.trigger at 0x79b26a86a520>
+                     └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x79b269786150>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ <unprintable dict object>
+                 │             └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 └ functools.partial(<bot.middlewares.database.DatabaseMiddleware object at 0x79b26960fe00>, functools.partial(<bot.middlewares....
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/middlewares/database.py", line 25, in __call__
+    result = await handler(event, data)
+                   │       │      └ <unprintable dict object>
+                   │       └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                   └ functools.partial(<bot.middlewares.user_register.UserRegisterMiddleware object at 0x79b26960fe90>, functools.partial(<bot.mid...
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/middlewares/user_register.py", line 38, in __call__
+    return await handler(event, data)
+                 │       │      └ <unprintable dict object>
+                 │       └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 └ functools.partial(<bot.middlewares.ban_check.BanCheckMiddleware object at 0x79b26960fef0>, <function CallableObject.call at 0...
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/middlewares/ban_check.py", line 37, in __call__
+    return await handler(event, data)
+                 │       │      └ <unprintable dict object>
+                 │       └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 └ <function CallableObject.call at 0x79b268aabce0>
+
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+                 └ <unprintable partial object>
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/handlers/user/search.py", line 160, in process_movie_select
+    await _send_movie(callback.message, bot, session, movie, db_user, lang)
+          │           │        │        │    │        │      │        └ 'uz'
+          │           │        │        │    │        │      └ <unprintable User object>
+          │           │        │        │    │        └ <unprintable Movie object>
+          │           │        │        │    └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x79b2687f9a00>
+          │           │        │        └ <aiogram.client.bot.Bot object at 0x79b2698526f0>
+          │           │        └ Message(message_id=110, date=datetime.datetime(2026, 4, 18, 22, 35, 19, tzinfo=TzInfo(UTC)), chat=Chat(id=8763280176, type='p...
+          │           └ CallbackQuery(id='744513616971872496', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+          └ <function _send_movie at 0x79b269592520>
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/handlers/user/search.py", line 238, in _send_movie
+    await message.answer_photo(
+          │       └ <function Message.answer_photo at 0x79b26d022ac0>
+          └ Message(message_id=110, date=datetime.datetime(2026, 4, 18, 22, 35, 19, tzinfo=TzInfo(UTC)), chat=Chat(id=8763280176, type='p...
+
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/methods/base.py", line 84, in emit
+    return await bot(self)
+                 │   └ SendPhoto(chat_id=8763280176, photo='AAMCAgADIQUABOuZUvAAAwJp5AcN6pgxr57wOOJtvTK45iKh7gACvJEAAuS6IEueDvt4BkwyuAEAB20AAzsE', b...
+                 └ <aiogram.client.bot.Bot object at 0x79b2698526f0>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/client/bot.py", line 494, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+                 │    │       │     │               └ None
+                 │    │       │     └ SendPhoto(chat_id=8763280176, photo='AAMCAgADIQUABOuZUvAAAwJp5AcN6pgxr57wOOJtvTK45iKh7gACvJEAAuS6IEueDvt4BkwyuAEAB20AAzsE', b...
+                 │    │       └ <aiogram.client.bot.Bot object at 0x79b2698526f0>
+                 │    └ <aiogram.client.session.aiohttp.AiohttpSession object at 0x79b26960ddf0>
+                 └ <aiogram.client.bot.Bot object at 0x79b2698526f0>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/client/session/base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+           │    │                   │          │    └ SendPhoto(chat_id=8763280176, photo='AAMCAgADIQUABOuZUvAAAwJp5AcN6pgxr57wOOJtvTK45iKh7gACvJEAAuS6IEueDvt4BkwyuAEAB20AAzsE', b...
+           │    │                   │          └ <aiogram.client.bot.Bot object at 0x79b2698526f0>
+           │    │                   └ functools.partial(<bound method AiohttpSession.make_request of <aiogram.client.session.aiohttp.AiohttpSession object at 0x79b...
+           │    └ ~TelegramType
+           └ <function cast at 0x79b26e647ba0>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/client/session/aiohttp.py", line 189, in make_request
+    response = self.check_response(
+               │    └ <function BaseSession.check_response at 0x79b26adf91c0>
+               └ <aiogram.client.session.aiohttp.AiohttpSession object at 0x79b26960ddf0>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/client/session/base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+          │                         │               └ "Bad Request: can't use file of type Thumbnail as Photo"
+          │                         └ SendPhoto(chat_id=8763280176, photo='AAMCAgADIQUABOuZUvAAAwJp5AcN6pgxr57wOOJtvTK45iKh7gACvJEAAuS6IEueDvt4BkwyuAEAB20AAzsE', b...
+          └ <class 'aiogram.exceptions.TelegramBadRequest'>
+
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: can't use file of type Thumbnail as Photo
+2026-04-19 03:36:27.739 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 03:36:28.428 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 03:36:32.111 | ERROR    | __main__:global_error_handler:98 - Kutilmagan xato: Telegram server says - Bad Request: can't use file of type Thumbnail as Photo
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/main.py", line 154, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x726cd030c7c0>
+    │       └ <function run at 0x726cd4df5260>
+    └ <module 'asyncio' from '/usr/lib/python3.12/asyncio/__init__.py'>
+
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x726cd03f5a80>
+           │      └ <function Runner.run at 0x726cd4c04540>
+           └ <asyncio.runners.Runner object at 0x726cd56a4ec0>
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/empty/Documents/pet_projects/kinoBot/bot/main.py:142> wait_for=<Fut...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x726cd4c02160>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x726cd56a4ec0>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x726cd4c020c0>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x726cd4c03ec0>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x726cd4d463e0>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+                     │    │           │    │         └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,)}
+                     │    │           │    └ Update(update_id=182300313, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                     │    │           └ <aiogram.client.bot.Bot object at 0x726cd031d9d0>
+                     │    └ <function Dispatcher.feed_update at 0x726cd1574400>
+                     └ <Dispatcher '0x726cd0432480'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+                     │    │      └ <function TelegramEventObserver.wrap_outer_middleware at 0x726cd155ab60>
+                     │    └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x726cd031f800>
+                     └ <Dispatcher '0x726cd0432480'>
+> File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                 │       └ Update(update_id=182300313, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                 └ functools.partial(<aiogram.dispatcher.middlewares.user_context.UserContextMiddleware object at 0x726cd02f7080>, functools.par...
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 56, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                 │       └ Update(update_id=182300313, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                 └ functools.partial(<aiogram.fsm.middleware.FSMContextMiddleware object at 0x726cd031f9b0>, <function TelegramEventObserver.tri...
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                 │       └ Update(update_id=182300313, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                 └ <function TelegramEventObserver.trigger at 0x726cd0330c20>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                 │             └ Update(update_id=182300313, message=None, edited_message=None, channel_post=None, edited_channel_post=None, business_connecti...
+                 └ <function CallableObject.call at 0x726cd0332020>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+                 └ functools.partial(<bound method Dispatcher._listen_update of <Dispatcher '0x726cd0432480'>>, Update(update_id=182300313, mess...
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+                 │    │                           │                  │        └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                 │    │                           │                  └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 │    │                           └ 'callback_query'
+                 │    └ <function Router.propagate_event at 0x726cd155b9c0>
+                 └ <Dispatcher '0x726cd0432480'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                 │        │                     │               └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x726cd0333100>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x726cd155ab60>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x726cd031ea80>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x726cd155ba60>
+                 └ <Dispatcher '0x726cd0432480'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+                     │      │                           │                  │        └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                     │      │                           │                  └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                     │      │                           └ 'callback_query'
+                     │      └ <function Router.propagate_event at 0x726cd155b9c0>
+                     └ <Router 'search'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                 │        │                     │               └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x726cd0333380>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x726cd155ab60>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x726cd0492360>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x726cd155ba60>
+                 └ <Router 'search'>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+                     │        │       │        └ {'dispatcher': <Dispatcher '0x726cd0432480'>, 'bots': (<aiogram.client.bot.Bot object at 0x726cd031d9d0>,), 'bot': <aiogram.c...
+                     │        │       └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                     │        └ <function TelegramEventObserver.trigger at 0x726cd155aca0>
+                     └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x726cd0492360>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ <unprintable dict object>
+                 │             └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 └ functools.partial(<bot.middlewares.database.DatabaseMiddleware object at 0x726cd031fa10>, functools.partial(<bot.middlewares....
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/middlewares/database.py", line 25, in __call__
+    result = await handler(event, data)
+                   │       │      └ <unprintable dict object>
+                   │       └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                   └ functools.partial(<bot.middlewares.user_register.UserRegisterMiddleware object at 0x726cd031faa0>, functools.partial(<bot.mid...
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/middlewares/user_register.py", line 38, in __call__
+    return await handler(event, data)
+                 │       │      └ <unprintable dict object>
+                 │       └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 └ functools.partial(<bot.middlewares.ban_check.BanCheckMiddleware object at 0x726cd031fb00>, <function CallableObject.call at 0...
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/middlewares/ban_check.py", line 37, in __call__
+    return await handler(event, data)
+                 │       │      └ <unprintable dict object>
+                 │       └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+                 └ <function CallableObject.call at 0x726cd0333240>
+
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+                 └ <unprintable partial object>
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/handlers/user/search.py", line 160, in process_movie_select
+    await _send_movie(callback.message, bot, session, movie, db_user, lang)
+          │           │        │        │    │        │      │        └ 'uz'
+          │           │        │        │    │        │      └ <unprintable User object>
+          │           │        │        │    │        └ <unprintable Movie object>
+          │           │        │        │    └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x726cd033e360>
+          │           │        │        └ <aiogram.client.bot.Bot object at 0x726cd031d9d0>
+          │           │        └ Message(message_id=110, date=datetime.datetime(2026, 4, 18, 22, 35, 19, tzinfo=TzInfo(UTC)), chat=Chat(id=8763280176, type='p...
+          │           └ CallbackQuery(id='744513614554948971', from_user=User(id=8763280176, is_bot=False, first_name='Iskandar', last_name=None, use...
+          └ <function _send_movie at 0x726cd0496840>
+
+  File "/home/empty/Documents/pet_projects/kinoBot/bot/handlers/user/search.py", line 238, in _send_movie
+    await message.answer_photo(
+          │       └ <function Message.answer_photo at 0x726cd3d1eac0>
+          └ Message(message_id=110, date=datetime.datetime(2026, 4, 18, 22, 35, 19, tzinfo=TzInfo(UTC)), chat=Chat(id=8763280176, type='p...
+
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/methods/base.py", line 84, in emit
+    return await bot(self)
+                 │   └ SendPhoto(chat_id=8763280176, photo='AAMCAgADIQUABOuZUvAAAwJp5AcN6pgxr57wOOJtvTK45iKh7gACvJEAAuS6IEueDvt4BkwyuAEAB20AAzsE', b...
+                 └ <aiogram.client.bot.Bot object at 0x726cd031d9d0>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/client/bot.py", line 494, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+                 │    │       │     │               └ None
+                 │    │       │     └ SendPhoto(chat_id=8763280176, photo='AAMCAgADIQUABOuZUvAAAwJp5AcN6pgxr57wOOJtvTK45iKh7gACvJEAAuS6IEueDvt4BkwyuAEAB20AAzsE', b...
+                 │    │       └ <aiogram.client.bot.Bot object at 0x726cd031d9d0>
+                 │    └ <aiogram.client.session.aiohttp.AiohttpSession object at 0x726cd031da00>
+                 └ <aiogram.client.bot.Bot object at 0x726cd031d9d0>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/client/session/base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+           │    │                   │          │    └ SendPhoto(chat_id=8763280176, photo='AAMCAgADIQUABOuZUvAAAwJp5AcN6pgxr57wOOJtvTK45iKh7gACvJEAAuS6IEueDvt4BkwyuAEAB20AAzsE', b...
+           │    │                   │          └ <aiogram.client.bot.Bot object at 0x726cd031d9d0>
+           │    │                   └ functools.partial(<bound method AiohttpSession.make_request of <aiogram.client.session.aiohttp.AiohttpSession object at 0x726...
+           │    └ ~TelegramType
+           └ <function cast at 0x726cd4dd7ba0>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/client/session/aiohttp.py", line 189, in make_request
+    response = self.check_response(
+               │    └ <function BaseSession.check_response at 0x726cd1b291c0>
+               └ <aiogram.client.session.aiohttp.AiohttpSession object at 0x726cd031da00>
+  File "/home/empty/Documents/pet_projects/kinoBot/.venv/lib/python3.12/site-packages/aiogram/client/session/base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+          │                         │               └ "Bad Request: can't use file of type Thumbnail as Photo"
+          │                         └ SendPhoto(chat_id=8763280176, photo='AAMCAgADIQUABOuZUvAAAwJp5AcN6pgxr57wOOJtvTK45iKh7gACvJEAAuS6IEueDvt4BkwyuAEAB20AAzsE', b...
+          └ <class 'aiogram.exceptions.TelegramBadRequest'>
+
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: can't use file of type Thumbnail as Photo
+2026-04-19 03:36:36.512 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #2 qo'shildi (msg_id=3)
+2026-04-19 03:37:28.677 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 03:37:29.562 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 03:38:15.841 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #3 qo'shildi (msg_id=4)
+2026-04-19 03:40:39.172 | INFO     | __main__:main:147 - Bot to'xtatilmoqda...
+2026-04-19 03:40:43.117 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 03:40:43.930 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 03:44:08.214 | INFO     | __main__:main:147 - Bot to'xtatilmoqda...
+2026-04-19 03:44:15.472 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 03:44:16.713 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 03:47:11.478 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #4 qo'shildi (msg_id=5)
+2026-04-19 04:05:23.535 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #5 qo'shildi (msg_id=6)
+2026-04-19 04:06:16.284 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #6 qo'shildi (msg_id=7)
+2026-04-19 04:08:44.400 | INFO     | __main__:main:147 - Bot to'xtatilmoqda...
+2026-04-19 04:08:47.537 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 04:08:48.118 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 04:09:27.779 | INFO     | __main__:main:147 - Bot to'xtatilmoqda...
+2026-04-19 04:09:41.204 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 04:09:41.730 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 04:11:51.958 | INFO     | __main__:main:147 - Bot to'xtatilmoqda...
+2026-04-19 04:12:00.758 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 04:12:01.396 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 04:14:54.642 | INFO     | __main__:main:147 - Bot to'xtatilmoqda...
+2026-04-19 04:15:02.262 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 04:15:02.840 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 04:41:34.207 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #7 qo'shildi (msg_id=8)
+2026-04-19 04:43:10.419 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #8 qo'shildi (msg_id=9)
+2026-04-19 04:44:40.947 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #9 qo'shildi (msg_id=10)
+2026-04-19 04:53:46.583 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #10 qo'shildi (msg_id=11)
+2026-04-19 05:17:21.842 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #11 qo'shildi (msg_id=12)
+2026-04-19 05:17:37.756 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #12 qo'shildi (msg_id=13)
+2026-04-19 05:18:12.343 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #13 qo'shildi (msg_id=14)
+2026-04-19 05:18:12.440 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #14 qo'shildi (msg_id=15)
+2026-04-19 05:18:39.867 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #15 qo'shildi (msg_id=16)
+2026-04-19 05:19:05.009 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #16 qo'shildi (msg_id=17)
+2026-04-19 05:19:34.333 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #17 qo'shildi (msg_id=18)
+2026-04-19 05:20:01.786 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #18 qo'shildi (msg_id=19)
+2026-04-19 05:20:41.171 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #19 qo'shildi (msg_id=20)
+2026-04-19 05:20:41.283 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #20 qo'shildi (msg_id=21)
+2026-04-19 05:20:55.007 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #21 qo'shildi (msg_id=22)
+2026-04-19 05:21:16.063 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #22 qo'shildi (msg_id=23)
+2026-04-19 05:21:43.811 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #23 qo'shildi (msg_id=24)
+2026-04-19 05:23:06.657 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #24 qo'shildi (msg_id=25)
+2026-04-19 06:19:15.570 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #25 qo'shildi (msg_id=26)
+2026-04-19 06:21:09.385 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #26 qo'shildi (msg_id=27)
+2026-04-19 06:22:14.025 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #27 qo'shildi (msg_id=28)
+2026-04-19 06:23:37.680 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #28 qo'shildi (msg_id=29)
+2026-04-19 06:24:14.542 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #29 qo'shildi (msg_id=30)
+2026-04-19 06:25:57.569 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #30 qo'shildi (msg_id=31)
+2026-04-19 06:27:14.069 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #31 qo'shildi (msg_id=32)
+2026-04-19 06:28:24.935 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #32 qo'shildi (msg_id=33)
+2026-04-19 06:29:53.842 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #33 qo'shildi (msg_id=34)
+2026-04-19 06:31:43.218 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #34 qo'shildi (msg_id=35)
+2026-04-19 06:32:24.640 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #35 qo'shildi (msg_id=36)
+2026-04-19 06:40:24.460 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #36 qo'shildi (msg_id=37)
+2026-04-19 06:41:14.413 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #37 qo'shildi (msg_id=38)
+2026-04-19 06:54:42.204 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #38 qo'shildi (msg_id=39)
+2026-04-19 06:55:17.002 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #39 qo'shildi (msg_id=40)
+2026-04-19 20:28:30.204 | INFO     | __main__:main:53 - KinoBot ishga tushmoqda...
+2026-04-19 20:28:32.171 | INFO     | __main__:main:139 - Bot muvaffaqiyatli ishga tushdi!
+2026-04-19 22:50:10.295 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #40 qo'shildi (msg_id=41)
+2026-04-19 23:14:09.127 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #41 qo'shildi (msg_id=42)
+2026-04-19 23:19:04.561 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #42 qo'shildi (msg_id=43)
+2026-04-19 23:20:42.028 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #43 qo'shildi (msg_id=44)
+2026-04-19 23:21:52.466 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #44 qo'shildi (msg_id=45)
+2026-04-19 23:23:18.060 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #45 qo'shildi (msg_id=46)
+2026-04-19 23:24:20.299 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #46 qo'shildi (msg_id=47)
+2026-04-19 23:26:00.005 | INFO     | bot.handlers.channel_post:handle_new_channel_post:64 - Kanal post: #47 qo'shildi (msg_id=48)

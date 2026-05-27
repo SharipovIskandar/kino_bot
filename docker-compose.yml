@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  bot:
+    build: .
+    container_name: kinobot
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - kinobot_net
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: kinobot_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kinobot_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: kinobot_redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kinobot_net
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  kinobot_net:
+    driver: bridge
