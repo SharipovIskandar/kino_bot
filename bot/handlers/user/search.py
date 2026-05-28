@@ -181,23 +181,52 @@ async def process_search_pagination(
     await callback.answer()
 
 
-def _build_movie_info_text(movie: Movie, lang: str) -> str:
-    """Kino ma'lumotlari kartochkasini formatlash"""
-    genres = ", ".join(g.get_name(lang) for g in movie.genres) if movie.genres else ""
-    return get_text(
-        "movie-info",
-        lang,
-        title=movie.get_title(lang),
-        year=movie.year or 0,
-        duration=movie.duration or 0,
-        country=movie.country or "",
-        genres=genres,
-        lang_type=movie.language_type.value if movie.language_type else "",
-        imdb=movie.imdb_rating or 0,
-        kinopoisk=movie.kinopoisk_rating or 0,
-        description=movie.get_description(lang),
-        views=movie.view_count + 1,
-    )
+def _build_movie_caption(movie: Movie) -> str:
+    """Kino ma'lumotlari kartochkasi (video caption sifatida)"""
+    lines = [f"🎬 <b>{movie.title or movie.code}</b>"]
+
+    # Meta qator: yil · mamlakat · davomiylik
+    meta = []
+    if movie.year:
+        meta.append(f"📅 {movie.year}")
+    if movie.country:
+        meta.append(f"🌍 {movie.country}")
+    if movie.duration:
+        meta.append(f"⏱ {movie.duration} daq.")
+    if meta:
+        lines.append("  ".join(meta))
+
+    if movie.genres:
+        lines.append("🎭 " + ", ".join(g.name for g in movie.genres))
+
+    if movie.director:
+        lines.append(f"🎬 Rejissyor: {movie.director}")
+
+    if movie.cast:
+        lines.append(f"👥 {movie.cast[:80]}{'...' if len(movie.cast) > 80 else ''}")
+
+    # Reytinglar
+    ratings = []
+    if movie.imdb_rating:
+        ratings.append(f"⭐ IMDb: <b>{movie.imdb_rating}</b>")
+    if movie.kinopoisk_rating:
+        ratings.append(f"🎯 KP: <b>{movie.kinopoisk_rating}</b>")
+    if ratings:
+        lines.append("  ".join(ratings))
+
+    if movie.language_type:
+        lines.append(f"🔊 {movie.language_type.value}")
+
+    if movie.age_rating:
+        lines.append(f"🔞 {movie.age_rating}")
+
+    if movie.description:
+        desc = movie.description[:300] + ("..." if len(movie.description) > 300 else "")
+        lines.append(f"\n📝 <i>{desc}</i>")
+
+    lines.append(f"\n🆔 Kod: <code>{movie.code}</code>   👁 {movie.view_count + 1:,} ko'rilgan")
+
+    return "\n".join(lines)
 
 
 async def _send_movie(
@@ -208,18 +237,20 @@ async def _send_movie(
     db_user: User,
     lang: str,
 ) -> None:
-    """Kinoni yuborish, ma'lumot kartochkasini ko'rsatish"""
+    """Kinoni chiroyli caption bilan yuborish"""
+    caption = _build_movie_caption(movie)
+
     try:
         await bot.copy_message(
             chat_id=message.chat.id,
             from_chat_id=settings.movie_channel_id,
             message_id=movie.channel_message_id,
-            caption="",
+            caption=caption,
+            parse_mode="HTML",
             protect_content=True,
         )
     except TelegramBadRequest as e:
         if "message to copy not found" in str(e).lower() or "message_id_invalid" in str(e).lower():
-            # Kanal xabari o'chirilgan — kinoni noaktiv qilish
             movie.is_active = False
             logger.warning(f"Movie {movie.code} deactivated: channel msg {movie.channel_message_id} not found")
             await message.answer(get_text("movie-not-found", lang, code=movie.code))
@@ -232,10 +263,5 @@ async def _send_movie(
         await message.answer(get_text("error-general", lang))
         return
 
-    # Kino ma'lumotlari kartochkasini yuborish
-    info_text = _build_movie_info_text(movie, lang)
-    await message.answer(info_text)
-
-    # Ko'rish statistikasini saqlash
     if db_user:
         await record_view(session, movie.id, db_user.id)

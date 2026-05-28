@@ -490,3 +490,910 @@ aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: can't
 2026-05-28 03:20:07.435 | INFO     | __main__:main:72 - KinoBot ishga tushmoqda...
 2026-05-28 03:20:09.228 | INFO     | __main__:main:183 - Bot muvaffaqiyatli ishga tushdi!
 2026-05-28 03:20:09.569 | INFO     | __main__:run_admin_server:66 - Admin panel http://0.0.0.0:8001 portida ishga tushmoqda...
+2026-05-28 04:08:49.622 | INFO     | __main__:main:72 - KinoBot ishga tushmoqda...
+2026-05-28 04:08:52.918 | INFO     | __main__:main:183 - Bot muvaffaqiyatli ishga tushdi!
+2026-05-28 04:09:43.851 | INFO     | __main__:main:192 - Bot to'xtatilmoqda...
+2026-05-28 04:09:47.958 | INFO     | __main__:main:72 - KinoBot ishga tushmoqda...
+2026-05-28 04:09:49.956 | INFO     | __main__:main:183 - Bot muvaffaqiyatli ishga tushdi!
+2026-05-28 04:11:01.037 | INFO     | __main__:main:192 - Bot to'xtatilmoqda...
+2026-05-28 04:13:12.399 | INFO     | __main__:main:72 - KinoBot ishga tushmoqda...
+2026-05-28 04:13:14.544 | INFO     | __main__:main:183 - Bot muvaffaqiyatli ishga tushdi!
+2026-05-28 04:13:17.040 | ERROR    | __main__:global_error_handler:126 - Kutilmagan xato: password authentication failed for user "ai_bot_db"
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\main.py", line 199, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x0000016B64D6EF20>
+    │       └ <function run at 0x0000016B58C80680>
+    └ <module 'asyncio' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x0000016B64A69220>
+           │      └ <function Runner.run at 0x0000016B5AD887C0>
+           └ <asyncio.runners.Runner object at 0x0000016B649F4BC0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at C:\Users\koklo\Documents\pet_projects\kinoBot\bot\main.py:190> wait_for=<...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x0000016B5AD823E0>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x0000016B649F4BC0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+    │    └ <function ProactorEventLoop.run_forever at 0x0000016B5AE51F80>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x0000016B5AD88180>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x0000016B5ACC6200>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+                     │    │           │    │         └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,)}
+                     │    │           │    └ Update(update_id=87615104, message=Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC))...
+                     │    │           └ <aiogram.client.bot.Bot object at 0x0000016B62AF3920>
+                     │    └ <function Dispatcher.feed_update at 0x0000016B62A8C720>
+                     └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+                     │    │      └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                     │    └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64D8E0F0>
+                     └ <Dispatcher '0x16b64d8c2f0'>
+> File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615104, message=Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC))...
+                 └ functools.partial(<aiogram.dispatcher.middlewares.user_context.UserContextMiddleware object at 0x0000016B64D8E1E0>, functools...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615104, message=Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC))...
+                 └ functools.partial(<aiogram.fsm.middleware.FSMContextMiddleware object at 0x0000016B64D8E240>, <function TelegramEventObserver...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615104, message=Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC))...
+                 └ <function TelegramEventObserver.trigger at 0x0000016B64D8BE20>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │             └ Update(update_id=87615104, message=Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC))...
+                 └ <function CallableObject.call at 0x0000016B64D8BD80>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 └ functools.partial(<bound method Dispatcher._listen_update of <Dispatcher '0x16b64d8c2f0'>>, Update(update_id=87615104, messag...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+                 │    │                           │                  │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │    │                           │                  └ Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='pr...
+                 │    │                           └ 'message'
+                 │    └ <function Router.propagate_event at 0x0000016B62A73CE0>
+                 └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │        │                     │               └ Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='pr...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x0000016B64E18EA0>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64D8C3B0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x0000016B62A73D80>
+                 └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+                     │      │                           │                  │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                     │      │                           │                  └ Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='pr...
+                     │      │                           └ 'message'
+                     │      └ <function Router.propagate_event at 0x0000016B62A73CE0>
+                     └ <Router 'start'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │        │                     │               └ Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='pr...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x0000016B64E18FE0>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64CF0BF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x0000016B62A73D80>
+                 └ <Router 'start'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+                     │        │       │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                     │        │       └ Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='pr...
+                     │        └ <function TelegramEventObserver.trigger at 0x0000016B62A73240>
+                     └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64CF0BF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │             └ Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='pr...
+                 └ functools.partial(<bot.middlewares.bot_filter.BotFilterMiddleware object at 0x0000016B64D8E330>, functools.partial(<bot.middl...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\bot_filter.py", line 37, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='pr...
+                 └ functools.partial(<bot.middlewares.database.DatabaseMiddleware object at 0x0000016B64D8E360>, functools.partial(<bot.middlewa...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\database.py", line 25, in __call__
+    result = await handler(event, data)
+                   │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                   │       └ Message(message_id=413, date=datetime.datetime(2026, 5, 28, 11, 13, 6, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='pr...
+                   └ functools.partial(<bot.middlewares.user_register.UserRegisterMiddleware object at 0x0000016B64D8E3C0>, functools.partial(<bot...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\user_register.py", line 28, in __call__
+    user, created = await get_or_create_user(
+                          └ <function get_or_create_user at 0x0000016B6492ACA0>
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\database\crud\user.py", line 32, in get_or_create_user
+    user = await get_user(session, telegram_id)
+                 │        │        └ 7588801749
+                 │        └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000016B64F1A780>
+                 └ <function get_user at 0x0000016B6492AB60>
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\database\crud\user.py", line 13, in get_user
+    result = await session.execute(
+                   │       └ <function AsyncSession.execute at 0x0000016B646DF740>
+                   └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000016B64F1A780>
+
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 461, in execute
+    result = await greenlet_spawn(
+                   └ <function greenlet_spawn at 0x0000016B62E14220>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             │       │      │   └ <built-in function exc_info>
+             │       │      └ <module 'sys' (built-in)>
+             │       └ <method 'throw' of 'greenlet.greenlet' objects>
+             └ <_AsyncIoGreenlet object at 0x0000016B64D10480 (otid=0x0000016B616CDDA0) dead>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2362, in execute
+    return self._execute_internal(
+           │    └ <function Session._execute_internal at 0x0000016B64610180>
+           └ <sqlalchemy.orm.session.Session object at 0x0000016B64F1A870>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2237, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           │    │                    └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │    └ <function Session._connection_for_bind at 0x0000016B64607EC0>
+           └ <sqlalchemy.orm.session.Session object at 0x0000016B64F1A870>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2106, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           │     │                    │       └ None
+           │     │                    └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │     └ <function SessionTransaction._connection_for_bind at 0x0000016B64606840>
+           └ <sqlalchemy.orm.session.SessionTransaction object at 0x0000016B64DD2810>
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {}
+                │  │      └ (Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db), None)
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x0000016B64DD2810>
+                └ <function SessionTransaction._connection_for_bind at 0x0000016B646067A0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1189, in _connection_for_bind
+    conn = bind.connect()
+           │    └ <function Engine.connect at 0x0000016B6426ADE0>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 3278, in connect
+    return self._connection_cls(self)
+           │    │               └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │    └ <class 'sqlalchemy.engine.base.Connection'>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    self._dbapi_connection = engine.raw_connection()
+    │                        │      └ <function Engine.raw_connection at 0x0000016B6426AE80>
+    │                        └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+    └ <sqlalchemy.engine.base.Connection object at 0x0000016B64FFBDA0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 3302, in raw_connection
+    return self.pool.connect()
+           │    │    └ <function Pool.connect at 0x0000016B62E8B060>
+           │    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           │                │         └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           │                └ <classmethod(<function _ConnectionFairy._checkout at 0x0000016B62EA11C0>)>
+           └ <class 'sqlalchemy.pool.base._ConnectionFairy'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 1263, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            │                 │        └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+            │                 └ <classmethod(<function _ConnectionRecord.checkout at 0x0000016B62E8BCE0>)>
+            └ <class 'sqlalchemy.pool.base._ConnectionRecord'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+          │    └ <function QueuePool._do_get at 0x0000016B62EA2FC0>
+          └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\sqlalchemy...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x0000016B64F26E40>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ InvalidPasswordError('password authentication failed for user "ai_bot_db"')
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+           │    └ <function Pool._create_connection at 0x0000016B62E8ADE0>
+           └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+           │                 └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           └ <class 'sqlalchemy.pool.base._ConnectionRecord'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B64DB9550>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\sqlalchemy...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x0000016B64F27280>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ InvalidPasswordError('password authentication failed for user "ai_bot_db"')
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+    │    │                               │    │               └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B64DB9550>
+    │    │                               │    └ <function create_engine.<locals>.connect at 0x0000016B5D4562A0>
+    │    │                               └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+    │    └ <member 'dbapi_connection' of '_ConnectionRecord' objects>
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B64DB9550>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\create.py", line 643, in connect
+    return dialect.connect(*cargs, **cparams)
+           │       │        │        └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+           │       │        └ []
+           │       └ <function DefaultDialect.connect at 0x0000016B642FE200>
+           └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x0000016B646AFEF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 621, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+           │    │            │        │        └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+           │    │            │        └ ()
+           │    │            └ <function AsyncAdapt_asyncpg_dbapi.connect at 0x0000016B6480E3E0>
+           │    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi object at 0x0000016B6464DCD0>
+           └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x0000016B646AFEF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 949, in connect
+    await_only(creator_fn(*arg, **kw)),
+    │          │           │      └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+    │          │           └ ()
+    │          └ <function connect at 0x0000016B64854A40>
+    └ <function await_only at 0x0000016B62E140E0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object connect at 0x0000016B64AB4640>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x0000016B64D10480 (otid=0x0000016B616CDDA0) dead>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object connect at 0x0000016B64AB4640>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+                 │             └ <function _connect at 0x0000016B648F4900>
+                 └ <module 'asyncpg.connect_utils' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\asyn...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+                 └ <function _connect_addr at 0x0000016B648F4220>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 886, in _connect_addr
+    return await __connect_addr(params, True, *args)
+                 │              │              └ (('localhost', 5432), <ProactorEventLoop running=True closed=False debug=False>, ConnectionConfiguration(command_timeout=None...
+                 │              └ ConnectionParameters(user='ai_bot_db', password='ai_bot_db', database='ai_bot_db', ssl=<ssl.SSLContext object at 0x0000016B64...
+                 └ <function __connect_addr at 0x0000016B648F42C0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 934, in __connect_addr
+    await connected
+          └ <Future finished exception=InvalidPasswordError('password authentication failed for user "ai_bot_db"')>
+
+asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ai_bot_db"
+2026-05-28 04:13:17.529 | ERROR    | __main__:global_error_handler:126 - Kutilmagan xato: password authentication failed for user "ai_bot_db"
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\main.py", line 199, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x0000016B64D6EF20>
+    │       └ <function run at 0x0000016B58C80680>
+    └ <module 'asyncio' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x0000016B64A69220>
+           │      └ <function Runner.run at 0x0000016B5AD887C0>
+           └ <asyncio.runners.Runner object at 0x0000016B649F4BC0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at C:\Users\koklo\Documents\pet_projects\kinoBot\bot\main.py:190> wait_for=<...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x0000016B5AD823E0>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x0000016B649F4BC0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+    │    └ <function ProactorEventLoop.run_forever at 0x0000016B5AE51F80>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x0000016B5AD88180>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x0000016B5ACC6200>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+                     │    │           │    │         └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,)}
+                     │    │           │    └ Update(update_id=87615105, message=Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)...
+                     │    │           └ <aiogram.client.bot.Bot object at 0x0000016B62AF3920>
+                     │    └ <function Dispatcher.feed_update at 0x0000016B62A8C720>
+                     └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+                     │    │      └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                     │    └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64D8E0F0>
+                     └ <Dispatcher '0x16b64d8c2f0'>
+> File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615105, message=Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)...
+                 └ functools.partial(<aiogram.dispatcher.middlewares.user_context.UserContextMiddleware object at 0x0000016B64D8E1E0>, functools...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615105, message=Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)...
+                 └ functools.partial(<aiogram.fsm.middleware.FSMContextMiddleware object at 0x0000016B64D8E240>, <function TelegramEventObserver...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615105, message=Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)...
+                 └ <function TelegramEventObserver.trigger at 0x0000016B64EE1440>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │             └ Update(update_id=87615105, message=Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)...
+                 └ <function CallableObject.call at 0x0000016B64EE1DA0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 └ functools.partial(<bound method Dispatcher._listen_update of <Dispatcher '0x16b64d8c2f0'>>, Update(update_id=87615105, messag...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+                 │    │                           │                  │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │    │                           │                  └ Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 │    │                           └ 'message'
+                 │    └ <function Router.propagate_event at 0x0000016B62A73CE0>
+                 └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │        │                     │               └ Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x0000016B64EE13A0>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64D8C3B0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x0000016B62A73D80>
+                 └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+                     │      │                           │                  │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                     │      │                           │                  └ Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                     │      │                           └ 'message'
+                     │      └ <function Router.propagate_event at 0x0000016B62A73CE0>
+                     └ <Router 'start'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │        │                     │               └ Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x0000016B64EE1300>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64CF0BF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x0000016B62A73D80>
+                 └ <Router 'start'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+                     │        │       │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                     │        │       └ Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                     │        └ <function TelegramEventObserver.trigger at 0x0000016B62A73240>
+                     └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64CF0BF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │             └ Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 └ functools.partial(<bot.middlewares.bot_filter.BotFilterMiddleware object at 0x0000016B64D8E330>, functools.partial(<bot.middl...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\bot_filter.py", line 37, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 └ functools.partial(<bot.middlewares.database.DatabaseMiddleware object at 0x0000016B64D8E360>, functools.partial(<bot.middlewa...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\database.py", line 25, in __call__
+    result = await handler(event, data)
+                   │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                   │       └ Message(message_id=414, date=datetime.datetime(2026, 5, 28, 11, 13, 17, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                   └ functools.partial(<bot.middlewares.user_register.UserRegisterMiddleware object at 0x0000016B64D8E3C0>, functools.partial(<bot...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\user_register.py", line 28, in __call__
+    user, created = await get_or_create_user(
+                          └ <function get_or_create_user at 0x0000016B6492ACA0>
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\database\crud\user.py", line 32, in get_or_create_user
+    user = await get_user(session, telegram_id)
+                 │        │        └ 7588801749
+                 │        └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000016B65210200>
+                 └ <function get_user at 0x0000016B6492AB60>
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\database\crud\user.py", line 13, in get_user
+    result = await session.execute(
+                   │       └ <function AsyncSession.execute at 0x0000016B646DF740>
+                   └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000016B65210200>
+
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 461, in execute
+    result = await greenlet_spawn(
+                   └ <function greenlet_spawn at 0x0000016B62E14220>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             │       │      │   └ <built-in function exc_info>
+             │       │      └ <module 'sys' (built-in)>
+             │       └ <method 'throw' of 'greenlet.greenlet' objects>
+             └ <_AsyncIoGreenlet object at 0x0000016B6521AF40 (otid=0x0000016B616CDDA0) dead>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2362, in execute
+    return self._execute_internal(
+           │    └ <function Session._execute_internal at 0x0000016B64610180>
+           └ <sqlalchemy.orm.session.Session object at 0x0000016B652102F0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2237, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           │    │                    └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │    └ <function Session._connection_for_bind at 0x0000016B64607EC0>
+           └ <sqlalchemy.orm.session.Session object at 0x0000016B652102F0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2106, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           │     │                    │       └ None
+           │     │                    └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │     └ <function SessionTransaction._connection_for_bind at 0x0000016B64606840>
+           └ <sqlalchemy.orm.session.SessionTransaction object at 0x0000016B6521AA90>
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {}
+                │  │      └ (Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db), None)
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x0000016B6521AA90>
+                └ <function SessionTransaction._connection_for_bind at 0x0000016B646067A0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1189, in _connection_for_bind
+    conn = bind.connect()
+           │    └ <function Engine.connect at 0x0000016B6426ADE0>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 3278, in connect
+    return self._connection_cls(self)
+           │    │               └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │    └ <class 'sqlalchemy.engine.base.Connection'>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    self._dbapi_connection = engine.raw_connection()
+    │                        │      └ <function Engine.raw_connection at 0x0000016B6426AE80>
+    │                        └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+    └ <sqlalchemy.engine.base.Connection object at 0x0000016B652107A0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 3302, in raw_connection
+    return self.pool.connect()
+           │    │    └ <function Pool.connect at 0x0000016B62E8B060>
+           │    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           │                │         └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           │                └ <classmethod(<function _ConnectionFairy._checkout at 0x0000016B62EA11C0>)>
+           └ <class 'sqlalchemy.pool.base._ConnectionFairy'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 1263, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            │                 │        └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+            │                 └ <classmethod(<function _ConnectionRecord.checkout at 0x0000016B62E8BCE0>)>
+            └ <class 'sqlalchemy.pool.base._ConnectionRecord'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+          │    └ <function QueuePool._do_get at 0x0000016B62EA2FC0>
+          └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\sqlalchemy...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x0000016B6521BAC0>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ InvalidPasswordError('password authentication failed for user "ai_bot_db"')
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+           │    └ <function Pool._create_connection at 0x0000016B62E8ADE0>
+           └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+           │                 └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           └ <class 'sqlalchemy.pool.base._ConnectionRecord'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B6498C530>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\sqlalchemy...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x0000016B6521B980>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ InvalidPasswordError('password authentication failed for user "ai_bot_db"')
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+    │    │                               │    │               └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B6498C530>
+    │    │                               │    └ <function create_engine.<locals>.connect at 0x0000016B5D4562A0>
+    │    │                               └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+    │    └ <member 'dbapi_connection' of '_ConnectionRecord' objects>
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B6498C530>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\create.py", line 643, in connect
+    return dialect.connect(*cargs, **cparams)
+           │       │        │        └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+           │       │        └ []
+           │       └ <function DefaultDialect.connect at 0x0000016B642FE200>
+           └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x0000016B646AFEF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 621, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+           │    │            │        │        └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+           │    │            │        └ ()
+           │    │            └ <function AsyncAdapt_asyncpg_dbapi.connect at 0x0000016B6480E3E0>
+           │    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi object at 0x0000016B6464DCD0>
+           └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x0000016B646AFEF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 949, in connect
+    await_only(creator_fn(*arg, **kw)),
+    │          │           │      └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+    │          │           └ ()
+    │          └ <function connect at 0x0000016B64854A40>
+    └ <function await_only at 0x0000016B62E140E0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object connect at 0x0000016B64AB44C0>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x0000016B6521AF40 (otid=0x0000016B616CDDA0) dead>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object connect at 0x0000016B64AB44C0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+                 │             └ <function _connect at 0x0000016B648F4900>
+                 └ <module 'asyncpg.connect_utils' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\asyn...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+                 └ <function _connect_addr at 0x0000016B648F4220>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 886, in _connect_addr
+    return await __connect_addr(params, True, *args)
+                 │              │              └ (('localhost', 5432), <ProactorEventLoop running=True closed=False debug=False>, ConnectionConfiguration(command_timeout=None...
+                 │              └ ConnectionParameters(user='ai_bot_db', password='ai_bot_db', database='ai_bot_db', ssl=<ssl.SSLContext object at 0x0000016B65...
+                 └ <function __connect_addr at 0x0000016B648F42C0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 934, in __connect_addr
+    await connected
+          └ <Future finished exception=InvalidPasswordError('password authentication failed for user "ai_bot_db"')>
+
+asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ai_bot_db"
+2026-05-28 04:13:45.032 | ERROR    | __main__:global_error_handler:126 - Kutilmagan xato: password authentication failed for user "ai_bot_db"
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\main.py", line 199, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x0000016B64D6EF20>
+    │       └ <function run at 0x0000016B58C80680>
+    └ <module 'asyncio' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x0000016B64A69220>
+           │      └ <function Runner.run at 0x0000016B5AD887C0>
+           └ <asyncio.runners.Runner object at 0x0000016B649F4BC0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at C:\Users\koklo\Documents\pet_projects\kinoBot\bot\main.py:190> wait_for=<...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x0000016B5AD823E0>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x0000016B649F4BC0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 678, in run_until_complete
+    self.run_forever()
+    │    └ <function ProactorEventLoop.run_forever at 0x0000016B5AE51F80>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 322, in run_forever
+    super().run_forever()
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 645, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x0000016B5AD88180>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1999, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x0000016B5ACC6200>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+                     │    │           │    │         └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,)}
+                     │    │           │    └ Update(update_id=87615106, message=Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)...
+                     │    │           └ <aiogram.client.bot.Bot object at 0x0000016B62AF3920>
+                     │    └ <function Dispatcher.feed_update at 0x0000016B62A8C720>
+                     └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+                     │    │      └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                     │    └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64D8E0F0>
+                     └ <Dispatcher '0x16b64d8c2f0'>
+> File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615106, message=Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)...
+                 └ functools.partial(<aiogram.dispatcher.middlewares.user_context.UserContextMiddleware object at 0x0000016B64D8E1E0>, functools...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615106, message=Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)...
+                 └ functools.partial(<aiogram.fsm.middleware.FSMContextMiddleware object at 0x0000016B64D8E240>, <function TelegramEventObserver...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Update(update_id=87615106, message=Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)...
+                 └ <function TelegramEventObserver.trigger at 0x0000016B64EE2340>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │             └ Update(update_id=87615106, message=Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)...
+                 └ <function CallableObject.call at 0x0000016B64EE2200>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+                 └ functools.partial(<bound method Dispatcher._listen_update of <Dispatcher '0x16b64d8c2f0'>>, Update(update_id=87615106, messag...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+                 │    │                           │                  │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │    │                           │                  └ Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 │    │                           └ 'message'
+                 │    └ <function Router.propagate_event at 0x0000016B62A73CE0>
+                 └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │        │                     │               └ Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x0000016B64EE23E0>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64D8C3B0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x0000016B62A73D80>
+                 └ <Dispatcher '0x16b64d8c2f0'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+                     │      │                           │                  │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                     │      │                           │                  └ Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                     │      │                           └ 'message'
+                     │      └ <function Router.propagate_event at 0x0000016B62A73CE0>
+                     └ <Router 'start'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+                 │        │                     │               │           └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │        │                     │               └ Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 │        │                     └ <function Router.propagate_event.<locals>._wrapped at 0x0000016B64EE2660>
+                 │        └ <function TelegramEventObserver.wrap_outer_middleware at 0x0000016B62A73100>
+                 └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64CF0BF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+                 │    └ <function Router._propagate_event at 0x0000016B62A73D80>
+                 └ <Router 'start'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+                     │        │       │        └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                     │        │       └ Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                     │        └ <function TelegramEventObserver.trigger at 0x0000016B62A73240>
+                     └ <aiogram.dispatcher.event.telegram.TelegramEventObserver object at 0x0000016B64CF0BF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+                 │             │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │             └ Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 └ functools.partial(<bot.middlewares.bot_filter.BotFilterMiddleware object at 0x0000016B64D8E330>, functools.partial(<bot.middl...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\bot_filter.py", line 37, in __call__
+    return await handler(event, data)
+                 │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                 │       └ Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                 └ functools.partial(<bot.middlewares.database.DatabaseMiddleware object at 0x0000016B64D8E360>, functools.partial(<bot.middlewa...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\database.py", line 25, in __call__
+    result = await handler(event, data)
+                   │       │      └ {'dispatcher': <Dispatcher '0x16b64d8c2f0'>, 'bots': (<aiogram.client.bot.Bot object at 0x0000016B62AF3920>,), 'bot': <aiogra...
+                   │       └ Message(message_id=415, date=datetime.datetime(2026, 5, 28, 11, 13, 44, tzinfo=TzInfo(UTC)), chat=Chat(id=7588801749, type='p...
+                   └ functools.partial(<bot.middlewares.user_register.UserRegisterMiddleware object at 0x0000016B64D8E3C0>, functools.partial(<bot...
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\middlewares\user_register.py", line 28, in __call__
+    user, created = await get_or_create_user(
+                          └ <function get_or_create_user at 0x0000016B6492ACA0>
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\database\crud\user.py", line 32, in get_or_create_user
+    user = await get_user(session, telegram_id)
+                 │        │        └ 7588801749
+                 │        └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000016B65211160>
+                 └ <function get_user at 0x0000016B6492AB60>
+
+  File "C:\Users\koklo\Documents\pet_projects\kinoBot\bot\database\crud\user.py", line 13, in get_user
+    result = await session.execute(
+                   │       └ <function AsyncSession.execute at 0x0000016B646DF740>
+                   └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000016B65211160>
+
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 461, in execute
+    result = await greenlet_spawn(
+                   └ <function greenlet_spawn at 0x0000016B62E14220>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             │       │      │   └ <built-in function exc_info>
+             │       │      └ <module 'sys' (built-in)>
+             │       └ <method 'throw' of 'greenlet.greenlet' objects>
+             └ <_AsyncIoGreenlet object at 0x0000016B6521ED00 (otid=0x0000016B616CDDA0) dead>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2362, in execute
+    return self._execute_internal(
+           │    └ <function Session._execute_internal at 0x0000016B64610180>
+           └ <sqlalchemy.orm.session.Session object at 0x0000016B65211220>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2237, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           │    │                    └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │    └ <function Session._connection_for_bind at 0x0000016B64607EC0>
+           └ <sqlalchemy.orm.session.Session object at 0x0000016B65211220>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2106, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           │     │                    │       └ None
+           │     │                    └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │     └ <function SessionTransaction._connection_for_bind at 0x0000016B64606840>
+           └ <sqlalchemy.orm.session.SessionTransaction object at 0x0000016B6521ED90>
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {}
+                │  │      └ (Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db), None)
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x0000016B6521ED90>
+                └ <function SessionTransaction._connection_for_bind at 0x0000016B646067A0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1189, in _connection_for_bind
+    conn = bind.connect()
+           │    └ <function Engine.connect at 0x0000016B6426ADE0>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 3278, in connect
+    return self._connection_cls(self)
+           │    │               └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+           │    └ <class 'sqlalchemy.engine.base.Connection'>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    self._dbapi_connection = engine.raw_connection()
+    │                        │      └ <function Engine.raw_connection at 0x0000016B6426AE80>
+    │                        └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+    └ <sqlalchemy.engine.base.Connection object at 0x0000016B65211640>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 3302, in raw_connection
+    return self.pool.connect()
+           │    │    └ <function Pool.connect at 0x0000016B62E8B060>
+           │    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           └ Engine(postgresql+asyncpg://ai_bot_db:***@localhost:5432/ai_bot_db)
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           │                │         └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           │                └ <classmethod(<function _ConnectionFairy._checkout at 0x0000016B62EA11C0>)>
+           └ <class 'sqlalchemy.pool.base._ConnectionFairy'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 1263, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            │                 │        └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+            │                 └ <classmethod(<function _ConnectionRecord.checkout at 0x0000016B62E8BCE0>)>
+            └ <class 'sqlalchemy.pool.base._ConnectionRecord'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+          │    └ <function QueuePool._do_get at 0x0000016B62EA2FC0>
+          └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\sqlalchemy...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x0000016B6521F7C0>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ InvalidPasswordError('password authentication failed for user "ai_bot_db"')
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+           │    └ <function Pool._create_connection at 0x0000016B62E8ADE0>
+           └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+           │                 └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+           └ <class 'sqlalchemy.pool.base._ConnectionRecord'>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B65053E30>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\sqlalchemy...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x0000016B6521F680>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ InvalidPasswordError('password authentication failed for user "ai_bot_db"')
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+    │    │                               │    │               └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B65053E30>
+    │    │                               │    └ <function create_engine.<locals>.connect at 0x0000016B5D4562A0>
+    │    │                               └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x0000016B6482B890>
+    │    └ <member 'dbapi_connection' of '_ConnectionRecord' objects>
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x0000016B65053E30>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\create.py", line 643, in connect
+    return dialect.connect(*cargs, **cparams)
+           │       │        │        └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+           │       │        └ []
+           │       └ <function DefaultDialect.connect at 0x0000016B642FE200>
+           └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x0000016B646AFEF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 621, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+           │    │            │        │        └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+           │    │            │        └ ()
+           │    │            └ <function AsyncAdapt_asyncpg_dbapi.connect at 0x0000016B6480E3E0>
+           │    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi object at 0x0000016B6464DCD0>
+           └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x0000016B646AFEF0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 949, in connect
+    await_only(creator_fn(*arg, **kw)),
+    │          │           │      └ {'host': 'localhost', 'database': 'ai_bot_db', 'user': 'ai_bot_db', 'password': 'ai_bot_db', 'port': 5432}
+    │          │           └ ()
+    │          └ <function connect at 0x0000016B64854A40>
+    └ <function await_only at 0x0000016B62E140E0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object connect at 0x0000016B64AB4940>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x0000016B6521ED00 (otid=0x0000016B616CDDA0) dead>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object connect at 0x0000016B64AB4940>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+                 │             └ <function _connect at 0x0000016B648F4900>
+                 └ <module 'asyncpg.connect_utils' from 'C:\\Users\\koklo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\asyn...
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+                 └ <function _connect_addr at 0x0000016B648F4220>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 886, in _connect_addr
+    return await __connect_addr(params, True, *args)
+                 │              │              └ (('localhost', 5432), <ProactorEventLoop running=True closed=False debug=False>, ConnectionConfiguration(command_timeout=None...
+                 │              └ ConnectionParameters(user='ai_bot_db', password='ai_bot_db', database='ai_bot_db', ssl=<ssl.SSLContext object at 0x0000016B65...
+                 └ <function __connect_addr at 0x0000016B648F42C0>
+  File "C:\Users\koklo\AppData\Local\Programs\Python\Python312\Lib\site-packages\asyncpg\connect_utils.py", line 934, in __connect_addr
+    await connected
+          └ <Future finished exception=InvalidPasswordError('password authentication failed for user "ai_bot_db"')>
+
+asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ai_bot_db"
+2026-05-28 04:13:54.012 | INFO     | __main__:main:192 - Bot to'xtatilmoqda...
+2026-05-28 04:13:57.309 | INFO     | __main__:main:72 - KinoBot ishga tushmoqda...
