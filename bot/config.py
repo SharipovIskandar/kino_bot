@@ -83,8 +83,8 @@ class Settings(BaseSettings):
     admin_port: int = 8000
     # HTTPS orqali ishlaganda True qiling (production)
     admin_cookie_secure: bool = False
-    # False qilish: bot.main admin serverni ishga tushirmaydi (Docker'da alohida service bo'lganda)
-    run_admin: bool = True
+    # True qilish: bot.main admin web serverni ham ishga tushiradi
+    run_admin: bool = False
 
     @model_validator(mode='after')
     def check_secret_defaults(self) -> 'Settings':
