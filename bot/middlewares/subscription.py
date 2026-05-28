@@ -14,8 +14,6 @@ from bot.services.i18n import get_text
 BYPASS_COMMANDS = {"/start", "/help"}
 BYPASS_CALLBACKS = {"check_sub"}
 
-_SUB_WARN_TTL = 60  # sekund
-
 
 async def _get_invite_links(bot, channels: list, session=None) -> dict:
     """
@@ -104,14 +102,7 @@ class SubscriptionMiddleware(BaseMiddleware):
         if not not_subscribed:
             return await handler(event, data)
 
-        # Redis dedup: 60s ichida bitta ogohlantirish
-        warn_key = f"sub_warn:{tg_user.id}"
-        already_warned = await self.redis.exists(warn_key)
-        if already_warned:
-            if isinstance(event, CallbackQuery):
-                await event.answer()
-            return
-
+        # Har safar ogohlantirish ko'rsatiladi — ThrottlingMiddleware spam'ni boshqaradi
         text = get_text("subscription-required", lang)
         channel_urls = await _get_invite_links(bot, not_subscribed, session=session)
         keyboard = build_subscription_keyboard(not_subscribed, lang, channel_urls=channel_urls)
@@ -121,7 +112,5 @@ class SubscriptionMiddleware(BaseMiddleware):
         elif isinstance(event, CallbackQuery):
             await event.message.answer(text, reply_markup=keyboard)
             await event.answer()
-
-        await self.redis.set(warn_key, 1, ex=_SUB_WARN_TTL)
 
         return

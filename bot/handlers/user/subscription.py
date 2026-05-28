@@ -44,8 +44,6 @@ async def process_check_subscription(
     )
 
     if not not_subscribed:
-        # Hammasi tekshirildi — Redis ogohlantirish kalitini tozalash
-        await redis.delete(f"sub_warn:{callback.from_user.id}")
         try:
             await callback.message.delete()
         except Exception:
