@@ -101,6 +101,7 @@ async def process_channel_add(
                 await message.answer(get_text("channel-already-exists", lang))
                 return
 
+
             await add_channel(
                 session=session,
                 channel_id=channel_id,

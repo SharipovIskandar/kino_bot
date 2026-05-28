@@ -33,22 +33,36 @@ async def add_channel(
     channel_username: Optional[str] = None,
     invite_link: Optional[str] = None,
 ) -> MandatoryChannel:
-    """Yangi majburiy kanal qo'shish"""
-    # Oxirgi order raqamini topish
+    """Majburiy kanal qo'shish yoki qayta faollashtirish"""
     result = await session.execute(
-        select(MandatoryChannel.order).order_by(MandatoryChannel.order.desc()).limit(1)
+        select(MandatoryChannel).where(MandatoryChannel.channel_id == channel_id)
     )
-    last_order = result.scalar_one_or_none() or 0
+    channel = result.scalar_one_or_none()
 
-    channel = MandatoryChannel(
-        channel_id=channel_id,
-        channel_title=channel_title,
-        channel_username=channel_username,
-        invite_link=invite_link,
-        added_by=added_by,
-        order=last_order + 1,
-    )
-    session.add(channel)
+    if channel:
+        # Mavjud (noaktiv) kanalni yangilash va faollashtirish
+        channel.channel_title = channel_title
+        channel.channel_username = channel_username
+        channel.invite_link = invite_link
+        channel.is_active = True
+        channel.added_by = added_by
+    else:
+        # Oxirgi order raqamini topish
+        order_result = await session.execute(
+            select(MandatoryChannel.order).order_by(MandatoryChannel.order.desc()).limit(1)
+        )
+        last_order = order_result.scalar_one_or_none() or 0
+
+        channel = MandatoryChannel(
+            channel_id=channel_id,
+            channel_title=channel_title,
+            channel_username=channel_username,
+            invite_link=invite_link,
+            added_by=added_by,
+            order=last_order + 1,
+        )
+        session.add(channel)
+
     await session.flush()
     await session.refresh(channel)
     return channel
