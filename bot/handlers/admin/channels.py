@@ -1,9 +1,10 @@
 import re
 
 from aiogram import Router, F
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,13 +13,13 @@ from bot.database.crud.channel import (
     get_all_channels, add_channel, remove_channel, get_channel_by_id
 )
 from bot.handlers.admin.panel import is_admin
-from bot.keyboards.admin_kb import build_channels_list_keyboard, build_back_to_panel_keyboard
+from bot.keyboards.admin_kb import build_channels_list_keyboard
 from bot.services.i18n import get_text
 from bot.services.subscription_checker import check_bot_is_admin
 
 router = Router(name="admin_channels")
 
-# t.me/+ yoki https://t.me/+ formatdagi join request/invite link
+# t.me/+ yoki https://t.me/+ formatdagi join request / invite link
 _JOIN_LINK_RE = re.compile(r"(?:https?://)?t\.me/\+(\S+)", re.IGNORECASE)
 
 
@@ -27,7 +28,6 @@ def _is_join_link(text: str) -> bool:
 
 
 def _normalize_join_link(text: str) -> str:
-    """Linkni standart https://t.me/+XXX formatga keltirish"""
     m = _JOIN_LINK_RE.search(text)
     if m:
         return f"https://t.me/+{m.group(1)}"
@@ -36,8 +36,10 @@ def _normalize_join_link(text: str) -> str:
 
 class ChannelState(StatesGroup):
     waiting_channel = State()
-    waiting_join_link_title = State()
+    waiting_join_link_info = State()   # join request link uchun qo'shimcha ma'lumot
 
+
+# ── Kanallar ro'yxati ────────────────────────────────────────────────────────
 
 @router.callback_query(F.data == "admin:channels")
 async def callback_channels_list(
@@ -56,6 +58,8 @@ async def callback_channels_list(
     await callback.message.edit_text(text, reply_markup=keyboard)
     await callback.answer()
 
+
+# ── Kanal qo'shish ───────────────────────────────────────────────────────────
 
 @router.callback_query(F.data == "channel:add")
 async def callback_channel_add(
@@ -83,24 +87,23 @@ async def process_channel_add(
     bot,
 ) -> None:
     await state.clear()
-    text = message.text.strip() if message.text else ""
+    text = (message.text or "").strip()
 
     # ── Join request / invite link (t.me/+XXXX) ──────────────────────────
     if _is_join_link(text):
         invite_link = _normalize_join_link(text)
 
-        # Bot orqali kanal ma'lumotlarini olishga urinish (bot kanalda admin bo'lsa ishlaydi)
+        # Bot kanalda admin bo'lsa — ma'lumotlarni avtomatik olamiz
         try:
             chat = await bot.get_chat(invite_link)
             channel_id = chat.id
             title = chat.title or str(channel_id)
-            username = chat.username
+            username = getattr(chat, "username", None)
 
             existing = await get_channel_by_id(session, channel_id)
             if existing and existing.is_active:
                 await message.answer(get_text("channel-already-exists", lang))
                 return
-
 
             await add_channel(
                 session=session,
@@ -111,15 +114,18 @@ async def process_channel_add(
                 added_by=message.from_user.id,
             )
             await message.answer(get_text("channel-added", lang, title=title))
+            return
 
-        except Exception:
-            # Bot kanalda emas yoki link noto'g'ri — title so'raymiz
-            await state.set_state(ChannelState.waiting_join_link_title)
-            await state.update_data(join_link=invite_link)
-            await message.answer(get_text("channel-join-link-title-prompt", lang))
+        except (TelegramForbiddenError, TelegramBadRequest, Exception):
+            pass
+
+        # Bot kanalda admin emas — qo'shimcha ma'lumot so'raymiz
+        await state.set_state(ChannelState.waiting_join_link_info)
+        await state.update_data(join_link=invite_link)
+        await message.answer(get_text("channel-join-link-need-info", lang))
         return
 
-    # ── Username yoki ID ──────────────────────────────────────────────────
+    # ── Oddiy kanal: username yoki ID ────────────────────────────────────
     try:
         if text.startswith("-") or text.lstrip("-").isdigit():
             channel_id = int(text)
@@ -166,33 +172,70 @@ async def process_channel_add(
     await message.answer(get_text("channel-added", lang, title=title))
 
 
-@router.message(ChannelState.waiting_join_link_title)
-async def process_join_link_title(
+# ── Join request link: qo'shimcha ma'lumot olish ────────────────────────────
+
+@router.message(ChannelState.waiting_join_link_info)
+async def process_join_link_info(
     message: Message,
     session: AsyncSession,
     db_user: User,
     lang: str,
     state: FSMContext,
+    bot,
 ) -> None:
-    """Join request link uchun kanal nomi + ID so'ralganda"""
+    """
+    Join request link uchun kanal ID va nomini olish.
+    2 usul qabul qilinadi:
+    1. Kanaldan forward qilingan xabar — ID va nom avtomatik olinadi
+    2. Matn: "Kanal nomi | -100XXXXXXXXX"
+    """
     data = await state.get_data()
-    await state.clear()
-
     invite_link = data.get("join_link", "")
-    text = message.text.strip() if message.text else ""
 
-    # Format: "Kanal nomi | -100XXXXXXXXX"
-    if "|" in text:
-        parts = text.split("|", 1)
-        title = parts[0].strip()
-        try:
-            channel_id = int(parts[1].strip())
-        except ValueError:
-            await message.answer(get_text("channel-not-found", lang))
+    # ── Usul 1: Forward qilingan xabar ───────────────────────────────────
+    if message.forward_from_chat:
+        fwd_chat = message.forward_from_chat
+        if fwd_chat.type not in ("channel", "supergroup"):
+            await message.answer(get_text("channel-forward-not-channel", lang))
             return
-    else:
+
+        channel_id = fwd_chat.id
+        title = fwd_chat.title or str(channel_id)
+        username = getattr(fwd_chat, "username", None)
+
+        await state.clear()
+
+        existing = await get_channel_by_id(session, channel_id)
+        if existing and existing.is_active:
+            await message.answer(get_text("channel-already-exists", lang))
+            return
+
+        await add_channel(
+            session=session,
+            channel_id=channel_id,
+            channel_title=title,
+            channel_username=username,
+            invite_link=invite_link,
+            added_by=message.from_user.id,
+        )
+        await message.answer(get_text("channel-added", lang, title=title))
+        return
+
+    # ── Usul 2: Matn "Kanal nomi | -100XXXXXXXXX" ────────────────────────
+    text = (message.text or "").strip()
+    if "|" not in text:
         await message.answer(get_text("channel-join-link-format-hint", lang))
         return
+
+    parts = text.split("|", 1)
+    title = parts[0].strip()
+    try:
+        channel_id = int(parts[1].strip())
+    except ValueError:
+        await message.answer(get_text("channel-join-link-format-hint", lang))
+        return
+
+    await state.clear()
 
     existing = await get_channel_by_id(session, channel_id)
     if existing and existing.is_active:
@@ -210,6 +253,8 @@ async def process_join_link_title(
     await message.answer(get_text("channel-added", lang, title=title))
 
 
+# ── Kanal ma'lumoti ──────────────────────────────────────────────────────────
+
 @router.callback_query(F.data.startswith("channel:info:"))
 async def callback_channel_info(
     callback: CallbackQuery,
@@ -217,7 +262,6 @@ async def callback_channel_info(
     db_user: User,
     lang: str,
 ) -> None:
-    """Kanal ma'lumotini ko'rsatish + o'chirish tugmasi"""
     if not is_admin(callback.from_user.id, db_user):
         await callback.answer(get_text("access-denied", lang), show_alert=True)
         return
@@ -254,9 +298,14 @@ async def callback_channel_info(
         callback_data="admin:channels",
     ))
 
-    await callback.message.edit_text(text, reply_markup=builder.as_markup())
+    try:
+        await callback.message.edit_text(text, reply_markup=builder.as_markup())
+    except TelegramBadRequest:
+        pass
     await callback.answer()
 
+
+# ── Kanalni o'chirish ────────────────────────────────────────────────────────
 
 @router.callback_query(F.data.startswith("channel:remove:"))
 async def callback_channel_remove(
@@ -277,6 +326,9 @@ async def callback_channel_remove(
         channels = await get_all_channels(session)
         text = get_text("channels-list", lang)
         keyboard = build_channels_list_keyboard(channels, lang)
-        await callback.message.edit_text(text, reply_markup=keyboard)
+        try:
+            await callback.message.edit_text(text, reply_markup=keyboard)
+        except TelegramBadRequest:
+            pass
     else:
         await callback.answer(get_text("channel-not-found", lang), show_alert=True)

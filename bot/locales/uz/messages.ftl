@@ -184,17 +184,27 @@ channel-removed = ✅ Kanal o'chirildi.
 channel-not-found = ❌ Kanal topilmadi.
 channel-already-exists = ⚠️ Bu kanal allaqachon ro'yxatda bor.
 channel-bot-not-admin = ❌ Bot bu kanalda admin emas. Avval botni kanalga admin qiling.
-channel-join-link-title-prompt =
+channel-join-link-need-info =
     ✅ Join request link qabul qilindi.
 
-    Bot kanalda admin emas, shuning uchun kanal ma'lumotlari avtomatik olinmadi.
+    Bot bu kanalda admin emas, shuning uchun kanal ma'lumotlari avtomatik olinmadi.
 
-    Iltimos, quyidagi formatda kanal nomi va ID sini yuboring:
+    Kanal ID sini berish uchun <b>2 usul</b>:
+
+    <b>1-usul (oson):</b> Kanaldan istalgan xabarni <b>forward</b> qiling — ID va nom avtomatik aniqlanadi.
+
+    <b>2-usul (qo'lda):</b> Quyidagi formatda yuboring:
     <code>Kanal nomi | -100XXXXXXXXX</code>
 
-    Kanal ID sini bilish uchun: @userinfobot ga kaналdan xabar forward qiling.
-channel-join-link-format-hint = ❌ Format noto'g'ri. Quyidagicha yuboring:
+    💡 Kanal ID sini bilish: @userinfobot ga kanaldan xabar forward qiling.
+
+channel-join-link-format-hint =
+    ❌ Format noto'g'ri. Quyidagicha yuboring:
     <code>Kanal nomi | -100XXXXXXXXX</code>
+
+    Yoki kanaldan xabar <b>forward</b> qiling.
+
+channel-forward-not-channel = ❌ Bu kanal xabari emas. Iltimos, kanaldan xabar forward qiling.
 
 btn-channel-remove = 🗑 O'chirish
 btn-channel-add = ➕ Kanal qo'shish

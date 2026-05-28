@@ -18,17 +18,27 @@ _SUB_WARN_TTL = 60  # sekund
 
 
 async def _get_invite_links(bot, channels: list, session=None) -> dict:
-    """Yopiq kanallar uchun invite link generatsiya qilish va DB'ga saqlash"""
+    """
+    Yopiq kanallar uchun invite link generatsiya qilish.
+    Join request link'i (`t.me/+`) allaqachon saqlangan bo'lsa — ustiga yozmaydi.
+    """
     urls = {}
     for ch in channels:
-        if not ch.invite_link and not ch.channel_username:
-            try:
-                link = await bot.export_chat_invite_link(ch.channel_id)
-                urls[ch.channel_id] = link
-                if session is not None:
-                    ch.invite_link = link
-            except Exception:
-                pass
+        # Allaqachon link bor (join request yoki oddiy) — ishlatamiz
+        if ch.invite_link:
+            urls[ch.channel_id] = ch.invite_link
+            continue
+        # Username bor — @username linkini yasaymiz
+        if ch.channel_username:
+            continue
+        # Na link, na username — export qilamiz (faqat oddiy private kanallar uchun)
+        try:
+            link = await bot.export_chat_invite_link(ch.channel_id)
+            urls[ch.channel_id] = link
+            if session is not None:
+                ch.invite_link = link
+        except Exception:
+            pass
     return urls
 
 
