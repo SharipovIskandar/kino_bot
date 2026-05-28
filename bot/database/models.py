@@ -121,17 +121,15 @@ class Genre(Base):
     __tablename__ = "genres"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    name_uz: Mapped[str] = mapped_column(String(64), nullable=False)
-    name_ru: Mapped[str] = mapped_column(String(64), nullable=False)
-    name_en: Mapped[str] = mapped_column(String(64), nullable=False)
+    name: Mapped[str] = mapped_column(String(64), nullable=False)
     slug: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
 
     movies: Mapped[List["Movie"]] = relationship(
         secondary="movie_genres", back_populates="genres"
     )
 
-    def get_name(self, lang: str) -> str:
-        return getattr(self, f"name_{lang}", self.name_uz)
+    def get_name(self, lang: str = "uz") -> str:
+        return self.name
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -145,17 +143,11 @@ class Movie(Base):
 
     # Identifikatsiya
     code: Mapped[str] = mapped_column(String(32), unique=True, nullable=False, index=True)
-    channel_message_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    channel_message_id: Mapped[int] = mapped_column(BigInteger, nullable=False, unique=True, index=True)
 
-    # Nomlar (3 tilda)
-    title_uz: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
-    title_ru: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
-    title_en: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
-
-    # Tavsiflar (3 tilda)
-    description_uz: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    description_ru: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    description_en: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # Nom va tavsif (faqat o'zbek)
+    title: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     # Metadata
     year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
@@ -194,26 +186,14 @@ class Movie(Base):
     )
     views: Mapped[List["MovieView"]] = relationship(back_populates="movie")
 
-    def get_title(self, lang: str) -> str:
-        return (
-            getattr(self, f"title_{lang}")
-            or self.title_uz
-            or self.title_ru
-            or self.title_en
-            or self.code
-        )
+    def get_title(self, lang: str = "uz") -> str:
+        return self.title or self.code
 
-    def get_description(self, lang: str) -> str:
-        return (
-            getattr(self, f"description_{lang}")
-            or self.description_uz
-            or self.description_ru
-            or self.description_en
-            or ""
-        )
+    def get_description(self, lang: str = "uz") -> str:
+        return self.description or ""
 
     def __repr__(self) -> str:
-        return f"<Movie code={self.code!r} title={self.title_uz!r}>"
+        return f"<Movie code={self.code!r} title={self.title!r}>"
 
 
 class MovieGenre(Base):

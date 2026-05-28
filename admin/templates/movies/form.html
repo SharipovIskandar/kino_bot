@@ -81,35 +81,25 @@
       </div>
     </div>
 
-    <!-- Nomlar -->
+    <!-- Nom -->
     <div class="col-12">
       <div class="card">
         <div class="card-header fw-semibold">
-          <i class="bi bi-translate me-2 text-success"></i>Nomlar
+          <i class="bi bi-translate me-2 text-success"></i>Nom
         </div>
         <div class="card-body">
           <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">🇺🇿 O'zbekcha</label>
-              <input type="text" name="title_uz" class="form-control"
-                     value="{{ movie.title_uz or '' }}">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">🇷🇺 Ruscha</label>
-              <input type="text" name="title_ru" class="form-control"
-                     value="{{ movie.title_ru or '' }}">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">🇬🇧 Inglizcha</label>
-              <input type="text" name="title_en" class="form-control"
-                     value="{{ movie.title_en or '' }}">
+            <div class="col-12">
+              <label class="form-label">Kino nomi</label>
+              <input type="text" name="title" class="form-control"
+                     value="{{ movie.title or '' }}" placeholder="Kino nomini kiriting">
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Tavsiflar -->
+    <!-- Tavsif -->
     <div class="col-12">
       <div class="card">
         <div class="card-header fw-semibold">
@@ -117,17 +107,9 @@
         </div>
         <div class="card-body">
           <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">🇺🇿 O'zbekcha</label>
-              <textarea name="description_uz" class="form-control" rows="4">{{ movie.description_uz or '' }}</textarea>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">🇷🇺 Ruscha</label>
-              <textarea name="description_ru" class="form-control" rows="4">{{ movie.description_ru or '' }}</textarea>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">🇬🇧 Inglizcha</label>
-              <textarea name="description_en" class="form-control" rows="4">{{ movie.description_en or '' }}</textarea>
+            <div class="col-12">
+              <label class="form-label">Kino tavsifi</label>
+              <textarea name="description" class="form-control" rows="4" placeholder="Kino haqida qisqa ma'lumot...">{{ movie.description or '' }}</textarea>
             </div>
           </div>
         </div>
@@ -174,7 +156,7 @@
                        value="{{ genre.id }}" id="genre_{{ genre.id }}"
                        {% if genre.id in selected_ids %}checked{% endif %}>
                 <label class="form-check-label small" for="genre_{{ genre.id }}">
-                  {{ genre.name_uz }}
+                  {{ genre.name }}
                 </label>
               </div>
             </div>

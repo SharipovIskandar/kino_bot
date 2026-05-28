@@ -27,8 +27,7 @@ async def movie_list(request: Request, page: int = 1, q: str = "", active: str =
         if q:
             s = f"%{q}%"
             base = base.where(
-                or_(Movie.code.ilike(s), Movie.title_uz.ilike(s),
-                    Movie.title_ru.ilike(s), Movie.title_en.ilike(s))
+                or_(Movie.code.ilike(s), Movie.title.ilike(s))
             )
         if active == "active":
             base = base.where(Movie.is_active == True)
@@ -51,7 +50,7 @@ async def movie_list(request: Request, page: int = 1, q: str = "", active: str =
 @router.get("/new")
 async def movie_new(request: Request):
     async with AsyncSessionFactory() as session:
-        genres_r = await session.execute(select(Genre).order_by(Genre.name_uz))
+        genres_r = await session.execute(select(Genre).order_by(Genre.name))
         genres = list(genres_r.scalars().all())
     return render(request, "movies/form.html", movie=None, genres=genres,
                   language_types=list(MovieLanguageType))
@@ -62,8 +61,8 @@ async def movie_create(
     request: Request,
     code: str = Form(...),
     channel_message_id: int = Form(...),
-    title_uz: str = Form(""), title_ru: str = Form(""), title_en: str = Form(""),
-    description_uz: str = Form(""), description_ru: str = Form(""), description_en: str = Form(""),
+    title: str = Form(""),
+    description: str = Form(""),
     year: Optional[int] = Form(None), duration: Optional[int] = Form(None),
     country: str = Form(""), director: str = Form(""), cast: str = Form(""),
     imdb_rating: Optional[float] = Form(None), kinopoisk_rating: Optional[float] = Form(None),
@@ -75,7 +74,7 @@ async def movie_create(
     async with AsyncSessionFactory() as session:
         existing = await session.execute(select(Movie).where(Movie.code == code))
         if existing.scalar_one_or_none():
-            genres_r = await session.execute(select(Genre).order_by(Genre.name_uz))
+            genres_r = await session.execute(select(Genre).order_by(Genre.name))
             return render(request, "movies/form.html", movie=None,
                           genres=list(genres_r.scalars().all()),
                           language_types=list(MovieLanguageType),
@@ -83,9 +82,8 @@ async def movie_create(
 
         movie = Movie(
             code=code, channel_message_id=channel_message_id,
-            title_uz=title_uz or None, title_ru=title_ru or None, title_en=title_en or None,
-            description_uz=description_uz or None, description_ru=description_ru or None,
-            description_en=description_en or None,
+            title=title or None,
+            description=description or None,
             year=year, duration=duration,
             country=country or None, director=director or None, cast=cast or None,
             imdb_rating=imdb_rating, kinopoisk_rating=kinopoisk_rating,
@@ -103,7 +101,7 @@ async def movie_create(
             admin_telegram_id=int(admin["sub"]),
             action_type="movie_create",
             target_id=code,
-            details={"title_uz": title_uz},
+            details={"title": title},
         ))
         await session.commit()
 
@@ -120,7 +118,7 @@ async def movie_edit(request: Request, movie_id: int):
         if not movie:
             return _redirect("/movies", "Kino topilmadi", "danger")
 
-        genres_r = await session.execute(select(Genre).order_by(Genre.name_uz))
+        genres_r = await session.execute(select(Genre).order_by(Genre.name))
         genres = list(genres_r.scalars().all())
 
     return render(request, "movies/form.html", movie=movie, genres=genres,
@@ -131,8 +129,8 @@ async def movie_edit(request: Request, movie_id: int):
 async def movie_update(
     request: Request, movie_id: int,
     channel_message_id: int = Form(...),
-    title_uz: str = Form(""), title_ru: str = Form(""), title_en: str = Form(""),
-    description_uz: str = Form(""), description_ru: str = Form(""), description_en: str = Form(""),
+    title: str = Form(""),
+    description: str = Form(""),
     year: Optional[int] = Form(None), duration: Optional[int] = Form(None),
     country: str = Form(""), director: str = Form(""), cast: str = Form(""),
     imdb_rating: Optional[float] = Form(None), kinopoisk_rating: Optional[float] = Form(None),
@@ -147,12 +145,8 @@ async def movie_update(
             return _redirect("/movies", "Kino topilmadi", "danger")
 
         movie.channel_message_id = channel_message_id
-        movie.title_uz = title_uz or None
-        movie.title_ru = title_ru or None
-        movie.title_en = title_en or None
-        movie.description_uz = description_uz or None
-        movie.description_ru = description_ru or None
-        movie.description_en = description_en or None
+        movie.title = title or None
+        movie.description = description or None
         movie.year = year
         movie.duration = duration
         movie.country = country or None

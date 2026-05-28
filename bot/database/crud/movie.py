@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timezone
 from typing import Optional, List
 
@@ -6,14 +7,39 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from bot.database.models import Movie, MovieView, Genre
+from bot.database.models import Movie, MovieView, Genre, MovieGenre
 
+
+# ── Genre yordamchi funksiyasi ────────────────────────────────────────────────
+
+def _slugify(name: str) -> str:
+    """Janr nomidan slug yaratish"""
+    slug = name.lower().strip()
+    slug = re.sub(r"[^\w\s-]", "", slug)
+    slug = re.sub(r"[\s_-]+", "_", slug)
+    return slug[:64]
+
+
+async def get_or_create_genre(session: AsyncSession, genre_name: str) -> Genre:
+    """Janrni topish yoki yaratish"""
+    slug = _slugify(genre_name)
+    result = await session.execute(select(Genre).where(Genre.slug == slug))
+    genre = result.scalar_one_or_none()
+    if not genre:
+        genre = Genre(name=genre_name.strip(), slug=slug)
+        session.add(genre)
+        await session.flush()
+        await session.refresh(genre)
+    return genre
+
+
+# ── Asosiy CRUD funksiyalar ───────────────────────────────────────────────────
 
 async def get_movie_by_code(session: AsyncSession, code: str) -> Optional[Movie]:
     """Kino kodiga qarab topish"""
     result = await session.execute(
         select(Movie)
-        .where(Movie.code == code.upper(), Movie.is_active == True)
+        .where(Movie.code == code.upper().strip(), Movie.is_active == True)
         .options(selectinload(Movie.genres))
     )
     return result.scalar_one_or_none()
@@ -36,9 +62,7 @@ async def search_movies(
             Movie.is_active == True,
             or_(
                 Movie.code.ilike(search),
-                Movie.title_uz.ilike(search),
-                Movie.title_ru.ilike(search),
-                Movie.title_en.ilike(search),
+                Movie.title.ilike(search),
             ),
         )
         .options(selectinload(Movie.genres))
@@ -62,30 +86,48 @@ async def upsert_movie(
     session: AsyncSession,
     code: str,
     channel_message_id: int,
+    genres: list | None = None,
     **kwargs,
 ) -> tuple[Movie, bool]:
     """
-    Kinoni qo'shish yoki yangilash (sync uchun).
+    Kinoni qo'shish yoki yangilash.
+    Avval code bo'yicha, keyin channel_message_id bo'yicha izlaydi.
     Returns: (movie, created)
     """
-    existing = await session.execute(
+    code = code.upper().strip()
+
+    # 1. Code bo'yicha izlash
+    result = await session.execute(
         select(Movie).where(Movie.code == code)
     )
-    movie = existing.scalar_one_or_none()
+    movie = result.scalar_one_or_none()
+
+    # 2. channel_message_id bo'yicha izlash (agar code bo'yicha topilmasa)
+    if movie is None:
+        result = await session.execute(
+            select(Movie).where(Movie.channel_message_id == channel_message_id)
+        )
+        movie = result.scalar_one_or_none()
 
     if movie:
         # Yangilash
+        movie.code = code
         movie.channel_message_id = channel_message_id
         movie.synced_at = datetime.now(timezone.utc)
         for key, value in kwargs.items():
             if hasattr(movie, key) and value is not None:
                 setattr(movie, key, value)
         await session.flush()
+
+        # Janrlarni yangilash
+        if genres is not None:
+            await _sync_movie_genres(session, movie, genres)
+
         return movie, False
     else:
         # Yaratish
         movie = Movie(
-            code=code.upper(),
+            code=code,
             channel_message_id=channel_message_id,
             synced_at=datetime.now(timezone.utc),
             **kwargs,
@@ -93,12 +135,42 @@ async def upsert_movie(
         session.add(movie)
         await session.flush()
         await session.refresh(movie)
+
+        # Janrlarni saqlash
+        if genres:
+            await _sync_movie_genres(session, movie, genres)
+
         return movie, True
+
+
+async def _sync_movie_genres(
+    session: AsyncSession,
+    movie: Movie,
+    genre_names: list[str],
+) -> None:
+    """Kinoning janrlarini yangilash"""
+    if not genre_names:
+        return
+
+    # Mavjud bog'lanishlarni o'chirish
+    from sqlalchemy import delete as sa_delete
+    await session.execute(
+        sa_delete(MovieGenre).where(MovieGenre.movie_id == movie.id)
+    )
+
+    # Yangi janrlarni qo'shish
+    for genre_name in genre_names:
+        if not genre_name.strip():
+            continue
+        genre = await get_or_create_genre(session, genre_name)
+        session.add(MovieGenre(movie_id=movie.id, genre_id=genre.id))
+
+    await session.flush()
 
 
 async def delete_movie(session: AsyncSession, code: str) -> bool:
     """Kinoni o'chirish (soft delete). Returns True agar topilsa"""
-    result = await session.execute(select(Movie).where(Movie.code == code))
+    result = await session.execute(select(Movie).where(Movie.code == code.upper().strip()))
     movie = result.scalar_one_or_none()
     if not movie:
         return False

@@ -18,8 +18,8 @@ router = Router(name="search")
 
 MOVIES_PER_PAGE = 5
 
-# Reply keyboard matni — 3 tilda
-_SEARCH_BTN = {"🔍 Qidirish", "🔍 Поиск", "🔍 Search"}
+# Reply keyboard matni — faqat o'zbek
+_SEARCH_BTN = {"🔍 Qidirish"}
 
 
 class SearchState(StatesGroup):
@@ -130,7 +130,6 @@ def _build_search_results_keyboard(
 
     # Pagination
     nav_row = []
-    # Prefixni 'p' (page) ga qisqartiramiz, 64-character limitni saqlash uchun
     if offset > 0:
         nav_row.append(
             InlineKeyboardButton(text="◀️", callback_data=f"p:{offset - MOVIES_PER_PAGE}:{query[:40]}")
@@ -154,7 +153,7 @@ async def process_movie_select(
     bot,
 ) -> None:
     """Kino tanlanganda forward qilish"""
-    code = callback.data.split(":")[1]
+    code = callback.data.split(":")[1].upper().strip()
     movie = await get_movie_by_code(session, code)
 
     if not movie:
@@ -172,19 +171,10 @@ async def process_search_pagination(
     lang: str,
 ) -> None:
     """Qidiruv paginatsiyasi (p:offset:query)"""
-    parts = callback.data.split(":")
+    # query o'zida ':' bo'lishi mumkin — faqat birinchi 2 ta ':' bo'yicha ajratamiz
+    parts = callback.data.split(":", 2)
     offset = int(parts[1]) if len(parts) > 1 else 0
     query = parts[2] if len(parts) > 2 else ""
-
-    # Message text'dan to'liq query'ni olishga harakat qilamiz (agar truncate qilingan bo'lsa)
-    # search-results-header: 🎬 결과 (query): ...
-    if callback.message.text and "🎬" in callback.message.text:
-        try:
-            # "🎬 Results for \"{query}\":" -> bizda l10n bor, shuning uchun biroz murakkab
-            # Lekin query[:40] ham ko'p hollarda yetarli
-            pass
-        except:
-            pass
 
     await callback.message.delete()
     await _do_search(callback.message, session, query, lang, offset)

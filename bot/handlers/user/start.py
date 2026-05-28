@@ -9,7 +9,7 @@ from bot.services.i18n import get_text
 
 router = Router(name="start")
 
-_HELP_BTN = {"ℹ️ Yordam", "ℹ️ Помощь", "ℹ️ Help"}
+_HELP_BTN = {"ℹ️ Yordam"}
 
 
 @router.message(CommandStart())
@@ -25,7 +25,7 @@ async def cmd_start(message: Message, db_user: User, lang: str, state: FSMContex
 @router.message(Command("help"))
 @router.message(F.text.in_(_HELP_BTN))
 async def cmd_help(message: Message, lang: str) -> None:
-    """Yordam — /help yoki '❓ Yordam' tugmasi"""
+    """Yordam — /help yoki 'ℹ️ Yordam' tugmasi"""
     await message.answer(
         get_text("help", lang),
         reply_markup=build_main_menu(lang),

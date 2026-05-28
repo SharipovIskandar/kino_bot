@@ -8,12 +8,8 @@ class ParsedMovie:
     """Kanaldan parse qilingan kino ma'lumotlari"""
     code: str
     message_id: int
-    title_uz: Optional[str] = None
-    title_ru: Optional[str] = None
-    title_en: Optional[str] = None
-    description_uz: Optional[str] = None
-    description_ru: Optional[str] = None
-    description_en: Optional[str] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
     year: Optional[int] = None
     duration: Optional[int] = None
     country: Optional[str] = None
@@ -25,6 +21,15 @@ class ParsedMovie:
     language_type: Optional[str] = None
     genres: list = field(default_factory=list)
 
+    def has_minimum_data(self) -> bool:
+        """Kamida 2 ta ma'lumot borligini tekshirish: title, year, genres"""
+        filled = sum([
+            bool(self.title),
+            bool(self.year),
+            bool(self.genres),
+        ])
+        return filled >= 2
+
 
 # ── Regex patternlar ──────────────────────────────────────────────────────────
 
@@ -35,50 +40,49 @@ CODE_PATTERNS = [
     re.compile(r"#(\d{3,6})\b"),
 ]
 
-# Yil: 📅 Yil: 2010 yoki 2010-yil
+# Yil: 📅 Yil: 2010
 YEAR_PATTERN = re.compile(
-    r"(?:📅\s*)?(?:Yil|Год|Year)\s*[:=]\s*(\d{4})", re.IGNORECASE
+    r"(?:📅\s*)?Yil\s*[:=]\s*(\d{4})", re.IGNORECASE
 )
 
-# Davomiylik: ⏱ Davomiyligi: 148 daqiqa / мин / min
+# Davomiylik: ⏱ Davomiyligi: 148 daqiqa
 DURATION_PATTERN = re.compile(
-    r"(?:⏱\s*)?(?:Davomiyligi|Длительность|Duration)\s*[:=]\s*(\d+)\s*(?:daqiqa|мин|min)?",
+    r"(?:⏱\s*)?Davomiyligi\s*[:=]\s*(\d+)\s*(?:daqiqa|min)?",
     re.IGNORECASE,
 )
 
 # Mamlakat
 COUNTRY_PATTERN = re.compile(
-    r"(?:🌍\s*)?(?:Mamlakat|Страна|Country)\s*[:=]\s*(.+?)(?:\n|$)",
+    r"(?:🌍\s*)?Mamlakat\s*[:=]\s*(.+?)(?:\n|$)",
     re.IGNORECASE,
 )
 
 # Janr
 GENRE_PATTERN = re.compile(
-    r"(?:🎭\s*)?(?:Janr|Жанр|Genre)\s*[:=]\s*(.+?)(?:\n|$)",
+    r"(?:🎭\s*)?Janr\s*[:=]\s*(.+?)(?:\n|$)",
     re.IGNORECASE,
 )
 
-# IMDb
+# IMDb + Kinopoisk: ⭐ IMDb: 8.8 | Kinopoisk: 8.7
 IMDB_PATTERN = re.compile(
-    r"(?:⭐\s*)?IMDb\s*[:=]\s*([\d.]+)",
+    r"IMDb\s*[:=]\s*([\d.]+)",
     re.IGNORECASE,
 )
 
-# Kinopoisk
 KINOPOISK_PATTERN = re.compile(
-    r"(?:🎯\s*)?Kinopoisk\s*[:=]\s*([\d.]+)",
+    r"Kinopoisk\s*[:=]\s*([\d.]+)",
     re.IGNORECASE,
 )
 
 # Rejissyor
 DIRECTOR_PATTERN = re.compile(
-    r"(?:🎬\s*)?(?:Rejissyor|Режиссёр|Director)\s*[:=]\s*(.+?)(?:\n|$)",
+    r"(?:🎬\s*)?Rejissyor\s*[:=]\s*(.+?)(?:\n|$)",
     re.IGNORECASE,
 )
 
 # Aktyor
 CAST_PATTERN = re.compile(
-    r"(?:👥\s*)?(?:Aktyorlar|Актёры|Cast)\s*[:=]\s*(.+?)(?:\n|$)",
+    r"(?:👥\s*)?Aktyorlar\s*[:=]\s*(.+?)(?:\n|$)",
     re.IGNORECASE,
 )
 
@@ -87,17 +91,17 @@ AGE_PATTERN = re.compile(r"\b(\d{1,2}\+)\b")
 
 # Til/dublyaj
 LANG_TYPE_PATTERN = re.compile(
-    r"(?:🔊\s*)?(?:Til|Язык|Language)\s*[:=]\s*(.+?)(?:\n|$)",
+    r"(?:🔊\s*)?Til\s*[:=]\s*(.+?)(?:\n|$)",
     re.IGNORECASE,
 )
 
 # Tavsif
 DESCRIPTION_PATTERN = re.compile(
-    r"(?:📝\s*)?(?:Tavsif|Описание|Description)\s*[:=]\s*(.+?)(?=\n[📅⏱🌍🎭⭐🎯🎬👥🔊#]|\Z)",
+    r"(?:📝\s*)?Tavsif\s*[:=]\s*(.+?)(?=\n[📅⏱🌍🎭⭐🎯🎬👥🔊#]|\Z)",
     re.IGNORECASE | re.DOTALL,
 )
 
-# Nom (birinchi qator odatda nom bo'ladi — "Nom / Название / Title" formatda)
+# Nom: birinchi qator 🎬 Kino Nomi
 TITLE_PATTERN = re.compile(
     r"^🎬\s*(.+?)$",
     re.MULTILINE,
@@ -108,14 +112,13 @@ def parse_caption(caption: str, message_id: int) -> Optional[ParsedMovie]:
     """
     Kino kanal xabarining caption'ini parse qiladi.
 
-    Caption formati (tavsiya etilgan):
+    Caption formati:
     ```
-    🎬 O'zbek Nomi / Русское Название / English Title
+    🎬 Kino Nomi
     📅 Yil: 2010
     🎭 Janr: Triller, Drama
     🌍 Mamlakat: AQSh
     ⏱ Davomiyligi: 148 daqiqa
-    🔊 Til: O'zbek dublyaj
     🎬 Rejissyor: Christopher Nolan
     ⭐ IMDb: 8.8 | Kinopoisk: 8.7
     📝 Tavsif: Kino haqida...
@@ -131,7 +134,7 @@ def parse_caption(caption: str, message_id: int) -> Optional[ParsedMovie]:
     for pattern in CODE_PATTERNS:
         match = pattern.search(caption)
         if match:
-            code = match.group(1).upper()
+            code = match.group(1).upper().strip()
             break
 
     if not code:
@@ -139,16 +142,15 @@ def parse_caption(caption: str, message_id: int) -> Optional[ParsedMovie]:
 
     movie = ParsedMovie(code=code, message_id=message_id)
 
-    # ── Nomlar ───────────────────────────────────────────────────────────
+    # ── Nom ──────────────────────────────────────────────────────────────
     title_match = TITLE_PATTERN.search(caption)
     if title_match:
-        titles = [t.strip() for t in title_match.group(1).split("/")]
-        if len(titles) >= 1:
-            movie.title_uz = titles[0]
-        if len(titles) >= 2:
-            movie.title_ru = titles[1]
-        if len(titles) >= 3:
-            movie.title_en = titles[2]
+        raw_title = title_match.group(1).strip()
+        # Agar "/" bilan ajratilgan bo'lsa (eski format), birinchi qismni olish
+        if "/" in raw_title:
+            movie.title = raw_title.split("/")[0].strip()
+        else:
+            movie.title = raw_title
 
     # ── Yil ─────────────────────────────────────────────────────────────
     match = YEAR_PATTERN.search(caption)
@@ -216,7 +218,10 @@ def parse_caption(caption: str, message_id: int) -> Optional[ParsedMovie]:
     # ── Tavsif ───────────────────────────────────────────────────────────
     match = DESCRIPTION_PATTERN.search(caption)
     if match:
-        desc = match.group(1).strip()
-        movie.description_uz = desc  # Tavsifni u/r/en ajratmay saqlaymiz (oddiy holatda)
+        movie.description = match.group(1).strip()
+
+    # ── Minimum ma'lumot tekshiruvi ───────────────────────────────────────
+    if not movie.has_minimum_data():
+        return None
 
     return movie

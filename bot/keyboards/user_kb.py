@@ -7,7 +7,6 @@ from bot.database.models import MandatoryChannel
 from bot.services.i18n import get_text
 
 
-
 def build_subscription_keyboard(
     channels: List[MandatoryChannel],
     lang: str = "uz",
@@ -25,7 +24,7 @@ def build_subscription_keyboard(
         elif channel.channel_username:
             url = f"https://t.me/{channel.channel_username.lstrip('@')}"
         else:
-            url = None  # Private channel without any link
+            url = None
 
         if url:
             builder.row(
@@ -34,10 +33,6 @@ def build_subscription_keyboard(
                     url=url,
                 )
             )
-        else:
-            # Link yo'q — tugmani ko'rsatmaymiz (faqat kanal nomi)
-            # Bu holat admin invite_link o'rnatmagan bo'lganda uchraydi
-            pass
 
     # "Tekshirish" tugmasi
     builder.row(
@@ -50,13 +45,13 @@ def build_subscription_keyboard(
 
 
 def build_main_menu(lang: str = "uz") -> ReplyKeyboardMarkup:
-    """Asosiy menyu — reply keyboard"""
+    """Asosiy menyu — reply keyboard (faqat o'zbek)"""
     builder = ReplyKeyboardBuilder()
     builder.row(
-        KeyboardButton(text="🔍 " + ("Qidirish" if lang == "uz" else "Поиск" if lang == "ru" else "Search")),
+        KeyboardButton(text="🔍 Qidirish"),
     )
     builder.row(
-        KeyboardButton(text="ℹ️ " + ("Yordam" if lang == "uz" else "Помощь" if lang == "ru" else "Help")),
+        KeyboardButton(text="ℹ️ Yordam"),
     )
     return builder.as_markup(resize_keyboard=True)
 

@@ -18,8 +18,8 @@ MOVIES_PER_PAGE = 10
 
 
 class MovieEditState(StatesGroup):
-    edit_titles = State()
-    edit_descriptions = State()
+    edit_title = State()
+    edit_description = State()
     edit_meta = State()
     edit_message_id = State()
 
@@ -28,9 +28,7 @@ class MovieEditState(StatesGroup):
 
 def _movie_info_text(movie: Movie) -> str:
     lines = [f"🎬 <b>{movie.code}</b>  {'🟢 Faol' if movie.is_active else '🔴 Nofaol'}\n"]
-    lines.append(f"🇺🇿 {movie.title_uz or '—'}")
-    lines.append(f"🇷🇺 {movie.title_ru or '—'}")
-    lines.append(f"🇬🇧 {movie.title_en or '—'}\n")
+    lines.append(f"📛 Nom: {movie.title or '—'}\n")
     lines.append(f"📅 Yil: {movie.year or '—'}   ⏱ {(str(movie.duration) + ' min') if movie.duration else '—'}")
     lines.append(f"🌍 {movie.country or '—'}   🔞 {movie.age_rating or '—'}")
     lines.append(f"🎬 {movie.director or '—'}")
@@ -46,7 +44,7 @@ def _movie_info_text(movie: Movie) -> str:
 def _movie_edit_keyboard(code: str, is_active: bool, offset: int = 0) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.row(
-        InlineKeyboardButton(text="✏️ Nomlar", callback_data=f"me:t:{code}"),
+        InlineKeyboardButton(text="✏️ Nom", callback_data=f"me:t:{code}"),
         InlineKeyboardButton(text="📝 Tavsif", callback_data=f"me:d:{code}"),
     )
     builder.row(
@@ -66,7 +64,7 @@ def _movie_edit_keyboard(code: str, is_active: bool, offset: int = 0) -> InlineK
 
 async def _get_movie(session: AsyncSession, code: str) -> Movie | None:
     result = await session.execute(
-        select(Movie).where(Movie.code == code).options(selectinload(Movie.genres))
+        select(Movie).where(Movie.code == code.upper().strip()).options(selectinload(Movie.genres))
     )
     return result.scalar_one_or_none()
 
@@ -99,7 +97,7 @@ async def callback_admin_movies(
     builder = InlineKeyboardBuilder()
     for movie in movies:
         status = "🟢" if movie.is_active else "🔴"
-        title = movie.get_title("uz")[:22]
+        title = (movie.title or movie.code)[:22]
         builder.row(
             InlineKeyboardButton(
                 text=f"{status} {movie.code} — {title}",
@@ -206,10 +204,10 @@ async def callback_movie_delete(
         await callback.answer("❌ Xatolik", show_alert=True)
 
 
-# ── Edit titles ────────────────────────────────────────────────────────────────
+# ── Edit title ─────────────────────────────────────────────────────────────────
 
 @router.callback_query(F.data.startswith("me:t:"))
-async def callback_edit_titles(
+async def callback_edit_title(
     callback: CallbackQuery,
     session: AsyncSession,
     db_user: User,
@@ -226,24 +224,19 @@ async def callback_edit_titles(
         await callback.answer("❌ Kino topilmadi", show_alert=True)
         return
 
-    await state.set_state(MovieEditState.edit_titles)
+    await state.set_state(MovieEditState.edit_title)
     await state.update_data(edit_code=code)
 
     await callback.message.answer(
-        f"✏️ <b>{code}</b> nomlarini tahrirlang.\n\n"
-        f"Hozirgi:\n"
-        f"🇺🇿 {movie.title_uz or '—'}\n"
-        f"🇷🇺 {movie.title_ru or '—'}\n"
-        f"🇬🇧 {movie.title_en or '—'}\n\n"
-        f"Yangi nomlarni yuboring:\n"
-        f"<code>O'zbek nomi | Ruscha nomi | English name</code>\n\n"
-        f"O'zgartirmaslik uchun <code>-</code> qo'ying."
+        f"✏️ <b>{code}</b> nomini tahrirlang.\n\n"
+        f"Hozirgi: {movie.title or '—'}\n\n"
+        f"Yangi nomni yuboring:"
     )
     await callback.answer()
 
 
-@router.message(MovieEditState.edit_titles)
-async def process_edit_titles(
+@router.message(MovieEditState.edit_title)
+async def process_edit_title(
     message: Message,
     session: AsyncSession,
     state: FSMContext,
@@ -257,28 +250,20 @@ async def process_edit_titles(
         await message.answer("❌ Kino topilmadi")
         return
 
-    parts = [p.strip() for p in message.text.split("|")]
-    if len(parts) != 3:
-        await message.answer("❌ Format noto'g'ri. Namuna:\n<code>O'zbek | Ruscha | English</code>")
-        return
-
-    if parts[0] != "-":
-        movie.title_uz = parts[0] or None
-    if parts[1] != "-":
-        movie.title_ru = parts[1] or None
-    if parts[2] != "-":
-        movie.title_en = parts[2] or None
+    new_title = message.text.strip()
+    if new_title and new_title != "-":
+        movie.title = new_title
 
     await message.answer(
-        f"✅ Nomlar yangilandi.\n\n" + _movie_info_text(movie),
+        f"✅ Nom yangilandi.\n\n" + _movie_info_text(movie),
         reply_markup=_movie_edit_keyboard(code, movie.is_active)
     )
 
 
-# ── Edit descriptions ──────────────────────────────────────────────────────────
+# ── Edit description ───────────────────────────────────────────────────────────
 
 @router.callback_query(F.data.startswith("me:d:"))
-async def callback_edit_descriptions(
+async def callback_edit_description(
     callback: CallbackQuery,
     session: AsyncSession,
     db_user: User,
@@ -295,20 +280,18 @@ async def callback_edit_descriptions(
         await callback.answer("❌ Kino topilmadi", show_alert=True)
         return
 
-    await state.set_state(MovieEditState.edit_descriptions)
+    await state.set_state(MovieEditState.edit_description)
     await state.update_data(edit_code=code)
 
     await callback.message.answer(
-        f"📝 <b>{code}</b> tavsiflarini tahrirlang.\n\n"
-        f"Tavsiflarni <code>===</code> bilan ajrating (3 tilda):\n\n"
-        f"<code>O'zbek tavsifi\n===\nRuscha tavsif\n===\nEnglish description</code>\n\n"
-        f"Faqat bir tilda bo'lsa, qolganlarini <code>-</code> qiling."
+        f"📝 <b>{code}</b> tavsifini tahrirlang.\n\n"
+        f"Yangi tavsifni yuboring:"
     )
     await callback.answer()
 
 
-@router.message(MovieEditState.edit_descriptions)
-async def process_edit_descriptions(
+@router.message(MovieEditState.edit_description)
+async def process_edit_description(
     message: Message,
     session: AsyncSession,
     state: FSMContext,
@@ -322,28 +305,12 @@ async def process_edit_descriptions(
         await message.answer("❌ Kino topilmadi")
         return
 
-    parts = message.text.split("===")
-    if len(parts) == 1:
-        # Faqat bitta til (o'zbek deb qabul qilamiz)
-        val = parts[0].strip()
-        if val and val != "-":
-            movie.description_uz = val
-    else:
-        if len(parts) >= 1:
-            val = parts[0].strip()
-            if val and val != "-":
-                movie.description_uz = val
-        if len(parts) >= 2:
-            val = parts[1].strip()
-            if val and val != "-":
-                movie.description_ru = val
-        if len(parts) >= 3:
-            val = parts[2].strip()
-            if val and val != "-":
-                movie.description_en = val
+    val = message.text.strip()
+    if val and val != "-":
+        movie.description = val
 
     await message.answer(
-        f"✅ Tavsiflar yangilandi.",
+        f"✅ Tavsif yangilandi.",
         reply_markup=_movie_edit_keyboard(code, movie.is_active)
     )
 

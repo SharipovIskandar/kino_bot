@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.config import settings
 from bot.database.crud.movie import upsert_movie
-from bot.database.models import SyncLog, SyncStatus
+from bot.database.models import SyncLog, SyncStatus, MovieLanguageType
 from bot.services.caption_parser import parse_caption
 
 # Ketma-ket topilmagan xabarlar limiti — shundan keyin sync to'xtatiladi
@@ -47,7 +47,6 @@ async def sync_movies_from_channel(
     added = 0
     updated = 0
     skipped = 0
-    error_msg = None
 
     try:
         logger.info(f"Sync boshlandi. Kanal: {settings.movie_channel_id}, admin: {triggered_by}")
@@ -76,37 +75,50 @@ async def sync_movies_from_channel(
                 caption = forwarded.caption or forwarded.text
                 photo_file_id = forwarded.photo[-1].file_id if forwarded.photo else None
 
-                if caption:
-                    parsed = parse_caption(caption, msg_id)
-                    if parsed:
-                        _, created = await upsert_movie(
-                            session=session,
-                            code=parsed.code,
-                            channel_message_id=msg_id,
-                            title_uz=parsed.title_uz,
-                            title_ru=parsed.title_ru,
-                            title_en=parsed.title_en,
-                            description_uz=parsed.description_uz,
-                            description_ru=parsed.description_ru,
-                            description_en=parsed.description_en,
-                            year=parsed.year,
-                            duration=parsed.duration,
-                            country=parsed.country,
-                            director=parsed.director,
-                            cast=parsed.cast,
-                            imdb_rating=parsed.imdb_rating,
-                            kinopoisk_rating=parsed.kinopoisk_rating,
-                            age_rating=parsed.age_rating,
-                            poster_file_id=photo_file_id,
-                        )
-                        if created:
-                            added += 1
-                        else:
-                            updated += 1
-                    else:
-                        skipped += 1
-                else:
+                if not caption:
                     skipped += 1
+                    msg_id += 1
+                    await asyncio.sleep(0.05)
+                    continue
+
+                parsed = parse_caption(caption, msg_id)
+                if not parsed:
+                    # Kod yo'q yoki yetarli ma'lumot yo'q — skip
+                    skipped += 1
+                    msg_id += 1
+                    await asyncio.sleep(0.05)
+                    continue
+
+                # language_type str -> MovieLanguageType enum konvertatsiyasi
+                lang_type = None
+                if parsed.language_type:
+                    try:
+                        lang_type = MovieLanguageType(parsed.language_type)
+                    except ValueError:
+                        pass
+
+                _, created = await upsert_movie(
+                    session=session,
+                    code=parsed.code,
+                    channel_message_id=msg_id,
+                    genres=parsed.genres if parsed.genres else None,
+                    title=parsed.title,
+                    description=parsed.description,
+                    year=parsed.year,
+                    duration=parsed.duration,
+                    country=parsed.country,
+                    director=parsed.director,
+                    cast=parsed.cast,
+                    imdb_rating=parsed.imdb_rating,
+                    kinopoisk_rating=parsed.kinopoisk_rating,
+                    age_rating=parsed.age_rating,
+                    language_type=lang_type,
+                    poster_file_id=photo_file_id,
+                )
+                if created:
+                    added += 1
+                else:
+                    updated += 1
 
             except TelegramBadRequest:
                 consecutive_fails += 1
@@ -126,7 +138,6 @@ async def sync_movies_from_channel(
         logger.error(f"Sync xatolik: {e}")
         sync_log.status = SyncStatus.FAILED
         sync_log.error_message = str(e)
-        error_msg = str(e)
 
     finally:
         sync_log.movies_added = added

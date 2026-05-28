@@ -5,7 +5,6 @@ from aiogram.types import TelegramObject, User as TgUser
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.crud.user import get_or_create_user, update_last_active
-from bot.config import settings
 
 
 class UserRegisterMiddleware(BaseMiddleware):
@@ -13,6 +12,7 @@ class UserRegisterMiddleware(BaseMiddleware):
     Har yangi update'da foydalanuvchini DB'da ro'yxatdan o'tkazadi.
     Mavjud bo'lsa last_active_at yangilaydi.
     User objectini data'ga qo'shadi.
+    Faqat o'zbek tili ishlatiladi.
     """
 
     async def __call__(
@@ -30,9 +30,9 @@ class UserRegisterMiddleware(BaseMiddleware):
                 telegram_id=tg_user.id,
                 full_name=tg_user.full_name,
                 username=tg_user.username,
-                language=(tg_user.language_code or settings.default_language).lower(),
+                language="uz",  # Faqat o'zbek tili
             )
             data["db_user"] = user
-            data["lang"] = user.language.value
+            data["lang"] = "uz"  # Har doim o'zbek
 
         return await handler(event, data)

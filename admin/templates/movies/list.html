@@ -57,8 +57,7 @@
           <tr>
             <td><code class="fw-bold">{{ movie.code }}</code></td>
             <td>
-              <div class="fw-medium">{{ movie.title_uz or movie.title_ru or '—' }}</div>
-              {% if movie.title_ru and movie.title_uz %}<small class="text-muted">{{ movie.title_ru }}</small>{% endif %}
+              <div class="fw-medium">{{ movie.title or '—' }}</div>
             </td>
             <td>{{ movie.year or '—' }}</td>
             <td>
