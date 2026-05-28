@@ -2,8 +2,12 @@ from typing import List
 
 from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError, TelegramBadRequest
+from loguru import logger
 
 from bot.database.models import MandatoryChannel
+
+# Obuna hisoblangan statuslar
+_SUBSCRIBED_STATUSES = {"member", "administrator", "creator"}
 
 
 async def check_user_subscriptions(
@@ -12,32 +16,61 @@ async def check_user_subscriptions(
     channels: List[MandatoryChannel],
 ) -> List[MandatoryChannel]:
     """
-    Foydalanuvchining har bir majburiy kanalga obuna bo'lgan-bo'lmaganligini tekshiradi.
+    Foydalanuvchining har bir majburiy kanalga obunasini real-time tekshiradi
+    (Telegram API get_chat_member orqali, DB cache'siz).
 
     Returns: Obuna bo'lmagan kanallar ro'yxati (bo'sh ro'yxat = hammasi obuna)
     """
     not_subscribed = []
 
     for channel in channels:
+        # Fake ID li join-request kanallar (channel_id < 0 va kichik raqam)
+        # tekshirib bo'lmaydi — shunchaki o'tkazib yuboramiz
+        if _is_fake_channel_id(channel.channel_id):
+            continue
+
         try:
-            # channel_id butun son bo'lishi kerak, lekin ba'zan string kelishi mumkin
-            c_id = int(channel.channel_id) if str(channel.channel_id).replace("-", "").isdigit() else channel.channel_id
-            
             member = await bot.get_chat_member(
-                chat_id=c_id,
+                chat_id=channel.channel_id,
                 user_id=user_id,
             )
-            # left yoki kicked bo'lsa obuna emas
-            if member.status in ("left", "kicked"):
+            if member.status not in _SUBSCRIBED_STATUSES:
                 not_subscribed.append(channel)
-        except (TelegramForbiddenError, TelegramBadRequest) as e:
-            # Bot kanalga kira olmayapti yoki user topilmadi — skip
-            pass
-        except Exception:
-            # Boshqa kutilmagan xatolar — skip (xavfsizlik uchun)
-            pass
+
+        except TelegramForbiddenError:
+            # Bot kanaldan chiqarilgan yoki admin emas — kanalga obunani tekshira olmaymiz
+            logger.warning(
+                f"Subscription check failed (bot not admin): channel_id={channel.channel_id}"
+            )
+            not_subscribed.append(channel)
+
+        except TelegramBadRequest as e:
+            err = str(e).lower()
+            if "user not found" in err or "chat not found" in err:
+                # Foydalanuvchi yoki kanal topilmadi → obuna emas
+                not_subscribed.append(channel)
+            else:
+                logger.warning(
+                    f"Subscription check BadRequest: channel_id={channel.channel_id} err={e}"
+                )
+                not_subscribed.append(channel)
+
+        except Exception as e:
+            logger.warning(
+                f"Subscription check unexpected error: channel_id={channel.channel_id} err={e}"
+            )
+            not_subscribed.append(channel)
 
     return not_subscribed
+
+
+def _is_fake_channel_id(channel_id: int) -> bool:
+    """
+    Fake ID — join-request link'dan generatsiya qilingan
+    (qarang: crud/channel.py _join_link_fake_id).
+    Real Telegram kanal IDlari -100XXXXXXXXXX (13+ xona), fake IDlar -1 dan -99_999_999 gacha.
+    """
+    return -100_000_000 < channel_id < 0
 
 
 async def check_bot_is_admin(bot: Bot, channel_id: int) -> bool:
