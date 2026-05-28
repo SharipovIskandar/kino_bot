@@ -24,12 +24,10 @@ class ParsedMovie:
     genres: list = field(default_factory=list)
 
     def has_minimum_data(self) -> bool:
-        """Kamida 2 ta ma'lumot borligini tekshirish: title, year, genres"""
-        filled = sum([
-            bool(self.title),
-            bool(self.year),
-            bool(self.genres),
-        ])
+        """Title bo'lsa yetarli; yo'q bo'lsa year+genres ichidan kamida 2 ta kerak"""
+        if self.title:
+            return True
+        filled = sum([bool(self.year), bool(self.genres)])
         return filled >= 2
 
 
@@ -104,10 +102,14 @@ DESCRIPTION_PATTERN = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 
-# Nom: birinchi qator 🎬 Kino Nomi
+# Nom: 🎬 Kino Nomi yoki title: Kino Nomi
 TITLE_PATTERN = re.compile(
     r"^🎬\s*(.+?)$",
     re.MULTILINE,
+)
+TITLE_PREFIX_PATTERN = re.compile(
+    r"^title\s*[:=]\s*(.+?)$",
+    re.IGNORECASE | re.MULTILINE,
 )
 
 
@@ -181,7 +183,7 @@ def parse_caption(caption: str, message_id: int) -> Optional[ParsedMovie]:
     movie = ParsedMovie(code=code, message_id=message_id)
 
     # ── Nom ──────────────────────────────────────────────────────────────
-    title_match = TITLE_PATTERN.search(caption)
+    title_match = TITLE_PATTERN.search(caption) or TITLE_PREFIX_PATTERN.search(caption)
     if title_match:
         raw_title = title_match.group(1).strip()
         # Agar "/" bilan ajratilgan bo'lsa (eski format), birinchi qismni olish
