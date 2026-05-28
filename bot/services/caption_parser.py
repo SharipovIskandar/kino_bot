@@ -2,6 +2,8 @@ import re
 from typing import Optional
 from dataclasses import dataclass, field
 
+from bot.database.models import MovieLanguageType
+
 
 @dataclass
 class ParsedMovie:
@@ -18,7 +20,7 @@ class ParsedMovie:
     imdb_rating: Optional[float] = None
     kinopoisk_rating: Optional[float] = None
     age_rating: Optional[str] = None
-    language_type: Optional[str] = None
+    language_type: Optional[MovieLanguageType] = None
     genres: list = field(default_factory=list)
 
     def has_minimum_data(self) -> bool:
@@ -33,33 +35,34 @@ class ParsedMovie:
 
 # ── Regex patternlar ──────────────────────────────────────────────────────────
 
-# Kod: #KOD_1234 yoki #1234 yoki KOD: 1234
+# Kod: #KOD_1234 yoki #1234 yoki KOD: 1234 yoki Kod: 1234
 CODE_PATTERNS = [
     re.compile(r"#KOD[_\s]?(\w+)", re.IGNORECASE),
     re.compile(r"KOD\s*[:=]\s*(\w+)", re.IGNORECASE),
+    re.compile(r"Kod\s*[:=]\s*(\w+)", re.IGNORECASE),
     re.compile(r"#(\d{3,6})\b"),
 ]
 
-# Yil: 📅 Yil: 2010
+# Yil: 📅 Yil: 2010 yoki Yili: 2010 (emoji ixtiyoriy)
 YEAR_PATTERN = re.compile(
-    r"(?:📅\s*)?Yil\s*[:=]\s*(\d{4})", re.IGNORECASE
+    r"(?:📅\s*)?Yil[i]?\s*[:=]\s*(\d{4})", re.IGNORECASE
 )
 
-# Davomiylik: ⏱ Davomiyligi: 148 daqiqa
+# Davomiylik: ⏱ Davomiyligi: 148 daqiqa (emoji ixtiyoriy, so'z oxiri ixtiyoriy)
 DURATION_PATTERN = re.compile(
-    r"(?:⏱\s*)?Davomiyligi\s*[:=]\s*(\d+)\s*(?:daqiqa|min)?",
+    r"(?:⏱\s*)?Davomiylig[i]?\s*[:=]\s*(\d+)\s*(?:daqiqa|min)?",
     re.IGNORECASE,
 )
 
-# Mamlakat
+# Mamlakat (emoji ixtiyoriy, so'z oxiri ixtiyoriy)
 COUNTRY_PATTERN = re.compile(
-    r"(?:🌍\s*)?Mamlakat\s*[:=]\s*(.+?)(?:\n|$)",
+    r"(?:🌍\s*)?Mamlakat[i]?\s*[:=]\s*(.+?)(?:\n|$)",
     re.IGNORECASE,
 )
 
-# Janr
+# Janr (emoji ixtiyoriy, so'z oxiri ixtiyoriy)
 GENRE_PATTERN = re.compile(
-    r"(?:🎭\s*)?Janr\s*[:=]\s*(.+?)(?:\n|$)",
+    r"(?:🎭\s*)?Janr[i]?\s*[:=]\s*(.+?)(?:\n|$)",
     re.IGNORECASE,
 )
 
@@ -106,6 +109,41 @@ TITLE_PATTERN = re.compile(
     r"^🎬\s*(.+?)$",
     re.MULTILINE,
 )
+
+
+def _map_language_type(raw: str) -> Optional[MovieLanguageType]:
+    """
+    Kanal caption'idagi til/dublyaj stringini MovieLanguageType enum'ga moslashtirish.
+    Noma'lum qiymat uchun None qaytaradi.
+    """
+    text = raw.lower().strip()
+
+    has_uz = "o'zbek" in text or "uzbek" in text or "o`zbek" in text
+    has_ru = "rus" in text or "russian" in text
+    has_dub = "dublyaj" in text or "dubbed" in text or "dub" in text
+    has_sub = "subtitle" in text or "subtitl" in text or "sub" in text
+    has_orig = "original" in text or "asl" in text or "orig" in text
+
+    if has_orig:
+        return MovieLanguageType.ORIGINAL
+    if has_uz and has_dub:
+        return MovieLanguageType.DUBBED_UZ
+    if has_ru and has_dub:
+        return MovieLanguageType.DUBBED_RU
+    if has_uz and has_sub:
+        return MovieLanguageType.SUBTITLED_UZ
+    if has_ru and has_sub:
+        return MovieLanguageType.SUBTITLED_RU
+    if "english" in text or "ingliz" in text:
+        if has_sub:
+            return MovieLanguageType.SUBTITLED_EN
+    # Faqat til ko'rsatilsa dublyaj deb qabul qilish
+    if has_uz:
+        return MovieLanguageType.DUBBED_UZ
+    if has_ru:
+        return MovieLanguageType.DUBBED_RU
+
+    return None
 
 
 def parse_caption(caption: str, message_id: int) -> Optional[ParsedMovie]:
@@ -213,7 +251,7 @@ def parse_caption(caption: str, message_id: int) -> Optional[ParsedMovie]:
     # ── Til ──────────────────────────────────────────────────────────────
     match = LANG_TYPE_PATTERN.search(caption)
     if match:
-        movie.language_type = match.group(1).strip()
+        movie.language_type = _map_language_type(match.group(1).strip())
 
     # ── Tavsif ───────────────────────────────────────────────────────────
     match = DESCRIPTION_PATTERN.search(caption)

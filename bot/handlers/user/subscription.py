@@ -1,5 +1,6 @@
 from aiogram import Router
 from aiogram.types import CallbackQuery, Message
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.crud.channel import get_active_channels
@@ -18,6 +19,7 @@ async def process_check_subscription(
     db_user: User,
     lang: str,
     bot,
+    redis: Redis,
 ) -> None:
     """'Obuna bo'ldim, tekshir!' tugmasini bosganida"""
     channels = await get_active_channels(session)
@@ -42,7 +44,8 @@ async def process_check_subscription(
     )
 
     if not not_subscribed:
-        # Hammasi tekshirildi — botni ishlata oladi
+        # Hammasi tekshirildi — Redis ogohlantirish kalitini tozalash
+        await redis.delete(f"sub_warn:{callback.from_user.id}")
         try:
             await callback.message.delete()
         except Exception:

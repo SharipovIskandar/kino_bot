@@ -41,7 +41,7 @@ async def add_admin(
         added_by=added_by,
     )
     session.add(admin)
-    await session.commit()
+    await session.flush()
     await session.refresh(admin)
     return admin
 
@@ -54,7 +54,7 @@ async def remove_admin(
     if not admin:
         return False
     await session.delete(admin)
-    await session.commit()
+    await session.flush()
     return True
 
 
@@ -74,5 +74,5 @@ async def update_admin_role(
     if not admin:
         return False
     admin.role = new_role
-    await session.commit()
+    await session.flush()
     return True

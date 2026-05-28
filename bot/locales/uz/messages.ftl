@@ -75,6 +75,13 @@ search-no-results = 😔 <b>"{ $query }"</b> bo'yicha hech narsa topilmadi.
 search-results-header = 🎬 <b>"{ $query }"</b> bo'yicha natijalar:
 search-result-item = { $num }. <b>{ $title }</b> ({ $year }) — kod: <code>{ $code }</code>
 search-select-prompt = ⬇️ Kino kodini yuboring yoki ro'yxatdan tanlang:
+search-cancelled = ❌ Qidiruv bekor qilindi.
+
+btn-random = 🎲 Tasodifiy
+btn-popular = 🔥 Mashhur
+btn-back-to-results = ◀️ Natijalarga qaytish
+no-movies-available = 😔 Hozircha kinolar mavjud emas.
+popular-movies-header = 🔥 <b>Eng mashhur kinolar:</b>
 
 movie-not-found = ❌ <b>{ $code }</b> kodli kino topilmadi.
 

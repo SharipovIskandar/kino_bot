@@ -2,6 +2,7 @@ from typing import Any, Awaitable, Callable
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message, CallbackQuery
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.config import settings
@@ -10,10 +11,10 @@ from bot.services.subscription_checker import check_user_subscriptions
 from bot.keyboards.user_kb import build_subscription_keyboard
 from bot.services.i18n import get_text
 
-# Buyruqlar — obuna tekshiruvisiz o'tkaziladi
 BYPASS_COMMANDS = {"/start", "/help"}
-# Callbacklar — obuna tekshiruvisiz o'tkaziladi
 BYPASS_CALLBACKS = {"check_sub"}
+
+_SUB_WARN_TTL = 60  # sekund
 
 
 async def _get_invite_links(bot, channels: list, session=None) -> dict:
@@ -24,7 +25,6 @@ async def _get_invite_links(bot, channels: list, session=None) -> dict:
             try:
                 link = await bot.export_chat_invite_link(ch.channel_id)
                 urls[ch.channel_id] = link
-                # Keyingi safar qayta generatsiya qilmaslik uchun DB'ga saqlaymiz
                 if session is not None:
                     ch.invite_link = link
             except Exception:
@@ -36,7 +36,11 @@ class SubscriptionMiddleware(BaseMiddleware):
     """
     Majburiy kanal obunasini tekshiradi.
     Adminlar va super adminlar bu middleware'dan o'tib ketadi.
+    Redis orqali 60s ichida bir foydalanuvchiga faqat bitta xabar yuboriladi.
     """
+
+    def __init__(self, redis: Redis) -> None:
+        self.redis = redis
 
     async def __call__(
         self,
@@ -46,6 +50,9 @@ class SubscriptionMiddleware(BaseMiddleware):
     ) -> Any:
         from aiogram.types import User as TgUser
         from bot.database.models import User as DbUser
+
+        # Redis ni data orqali handlerlarga uzatish
+        data["redis"] = self.redis
 
         tg_user: TgUser | None = data.get("event_from_user")
         db_user: DbUser | None = data.get("db_user")
@@ -60,7 +67,6 @@ class SubscriptionMiddleware(BaseMiddleware):
         if tg_user.id in settings.super_admin_list:
             return await handler(event, data)
 
-        # DB admini ham (Admin jadvali) bypass
         if db_user and db_user.admin_profile is not None:
             return await handler(event, data)
 
@@ -75,13 +81,10 @@ class SubscriptionMiddleware(BaseMiddleware):
             if event.data and any(event.data.startswith(bp) for bp in BYPASS_CALLBACKS):
                 return await handler(event, data)
 
-        # Aktiv kanallar ro'yxatini olish
         channels = await get_active_channels(session)
         if not channels:
-            # Majburiy kanal yo'q — o'tkazib yuboramiz
             return await handler(event, data)
 
-        # Obunani tekshirish
         not_subscribed = await check_user_subscriptions(
             bot=bot,
             user_id=tg_user.id,
@@ -89,10 +92,16 @@ class SubscriptionMiddleware(BaseMiddleware):
         )
 
         if not not_subscribed:
-            # Hammasiga obuna bo'lgan
             return await handler(event, data)
 
-        # Obuna bo'lmagan kanallar bor — xabar yuboramiz
+        # Redis dedup: 60s ichida bitta ogohlantirish
+        warn_key = f"sub_warn:{tg_user.id}"
+        already_warned = await self.redis.exists(warn_key)
+        if already_warned:
+            if isinstance(event, CallbackQuery):
+                await event.answer()
+            return
+
         text = get_text("subscription-required", lang)
         channel_urls = await _get_invite_links(bot, not_subscribed, session=session)
         keyboard = build_subscription_keyboard(not_subscribed, lang, channel_urls=channel_urls)
@@ -103,4 +112,6 @@ class SubscriptionMiddleware(BaseMiddleware):
             await event.message.answer(text, reply_markup=keyboard)
             await event.answer()
 
-        return  # handler'ga yo'l bermaymiz
+        await self.redis.set(warn_key, 1, ex=_SUB_WARN_TTL)
+
+        return

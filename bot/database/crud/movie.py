@@ -181,22 +181,22 @@ async def delete_movie(session: AsyncSession, code: str) -> bool:
 
 async def record_view(
     session: AsyncSession, movie_id: int, user_id: int
-) -> None:
-    """Ko'rish statistikasini saqlash (takroriy ko'rishlar hisoblanmaydi)"""
-    # INSERT ON CONFLICT DO NOTHING — race condition xavfsiz va atomik
+) -> bool:
+    """Ko'rish statistikasini saqlash. True = yangi ko'rish, False = takror."""
     stmt = (
         pg_insert(MovieView)
         .values(movie_id=movie_id, user_id=user_id)
         .on_conflict_do_nothing(constraint="uq_movie_views_user_movie")
     )
     result = await session.execute(stmt)
-    # Faqat yangi yozuv qo'shilganda view_count oshiriladi
     if result.rowcount > 0:
         await session.execute(
             update(Movie)
             .where(Movie.id == movie_id)
             .values(view_count=Movie.view_count + 1)
         )
+        return True
+    return False
 
 
 async def get_movies_paginated(
@@ -225,6 +225,30 @@ async def get_top_movies(
     session: AsyncSession, limit: int = 10
 ) -> List[Movie]:
     """Eng ko'p ko'rilgan kinolar"""
+    result = await session.execute(
+        select(Movie)
+        .where(Movie.is_active == True)
+        .order_by(desc(Movie.view_count))
+        .limit(limit)
+        .options(selectinload(Movie.genres))
+    )
+    return list(result.scalars().all())
+
+
+async def get_random_movie(session: AsyncSession) -> Optional[Movie]:
+    """Tasodifiy faol kino"""
+    result = await session.execute(
+        select(Movie)
+        .where(Movie.is_active == True)
+        .order_by(func.random())
+        .limit(1)
+        .options(selectinload(Movie.genres))
+    )
+    return result.scalar_one_or_none()
+
+
+async def get_popular_movies(session: AsyncSession, limit: int = 5) -> List[Movie]:
+    """Ko'rishlar soni bo'yicha mashhur kinolar"""
     result = await session.execute(
         select(Movie)
         .where(Movie.is_active == True)

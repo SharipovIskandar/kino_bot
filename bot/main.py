@@ -96,10 +96,11 @@ async def main() -> None:
     dp.message.middleware(BanCheckMiddleware())
     dp.callback_query.middleware(BanCheckMiddleware())
 
-    dp.message.middleware(SubscriptionMiddleware())
-    dp.callback_query.middleware(SubscriptionMiddleware())
+    dp.message.middleware(SubscriptionMiddleware(redis=redis))
+    dp.callback_query.middleware(SubscriptionMiddleware(redis=redis))
 
     dp.message.middleware(ThrottlingMiddleware(redis=redis))
+    dp.callback_query.middleware(ThrottlingMiddleware(redis=redis))
 
     # channel_post uchun faqat DB session kerak (user yo'q)
     dp.channel_post.middleware(DatabaseMiddleware())
@@ -143,6 +144,7 @@ async def main() -> None:
     user_commands = [
         BotCommand(command="start",  description="Botni boshlash"),
         BotCommand(command="search", description="Kino qidirish"),
+        BotCommand(command="cancel", description="Amalni bekor qilish"),
         BotCommand(command="help",   description="Yordam"),
     ]
     await bot.set_my_commands(user_commands, scope=BotCommandScopeDefault())

@@ -42,10 +42,18 @@ redis_data/
 # IDE
 .vscode/
 .idea/
+*.iml
+*.code-workspace
 *.swp
 *.swo
 .DS_Store
 Thumbs.db
+
+# Claude Code (local AI config)
+.claude/
+
+# OpenSpec (generated)
+openspec/
 
 # Testing & coverage
 .pytest_cache/
@@ -53,6 +61,8 @@ Thumbs.db
 htmlcov/
 .tox/
 .mypy_cache/
+.ruff_cache/
+.cache/
 
 # Docker volumes
 postgres_data/

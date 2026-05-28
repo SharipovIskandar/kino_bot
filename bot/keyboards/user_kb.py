@@ -47,19 +47,19 @@ def build_subscription_keyboard(
 def build_main_menu(lang: str = "uz") -> ReplyKeyboardMarkup:
     """Asosiy menyu — reply keyboard (faqat o'zbek)"""
     builder = ReplyKeyboardBuilder()
+    builder.row(KeyboardButton(text="🔍 Qidirish"))
     builder.row(
-        KeyboardButton(text="🔍 Qidirish"),
+        KeyboardButton(text="🎲 Tasodifiy"),
+        KeyboardButton(text="🔥 Mashhur"),
     )
-    builder.row(
-        KeyboardButton(text="ℹ️ Yordam"),
-    )
+    builder.row(KeyboardButton(text="ℹ️ Yordam"))
     return builder.as_markup(resize_keyboard=True)
 
 
 def build_cancel_keyboard(lang: str = "uz") -> ReplyKeyboardMarkup:
     """Bekor qilish klaviaturasi"""
     builder = ReplyKeyboardBuilder()
-    builder.row(KeyboardButton(text=get_text("btn-cancel", lang)))
+    builder.row(KeyboardButton(text="❌ Bekor qilish"))
     return builder.as_markup(resize_keyboard=True, one_time_keyboard=True)
 
 
