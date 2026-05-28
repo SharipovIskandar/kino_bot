@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.config import settings
 from bot.database.crud.channel import get_active_channels
-from bot.services.subscription_checker import check_user_subscriptions
+from bot.services.subscription_checker import check_user_subscriptions, _is_fake_channel_id
 from bot.keyboards.user_kb import build_subscription_keyboard
 from bot.services.i18n import get_text
 
@@ -99,13 +99,20 @@ class SubscriptionMiddleware(BaseMiddleware):
             channels=channels,
         )
 
-        if not not_subscribed:
+        # Real kanallar (verifikatsiya qilinadigan) va fake-ID (join-request) kanallarni ajratish
+        real_not_subscribed = [ch for ch in not_subscribed if not _is_fake_channel_id(ch.channel_id)]
+        fake_channels = [ch for ch in not_subscribed if _is_fake_channel_id(ch.channel_id)]
+
+        # Faqat real kanallar bloklaydi; fake-ID kanallar faqat keyboard'da ko'rsatiladi
+        if not real_not_subscribed:
             return await handler(event, data)
 
-        # Har safar ogohlantirish ko'rsatiladi — ThrottlingMiddleware spam'ni boshqaradi
+        # Keyboard'da: obuna bo'lmagan real kanallar + join-request kanallar
+        channels_to_show = real_not_subscribed + fake_channels
+
         text = get_text("subscription-required", lang)
-        channel_urls = await _get_invite_links(bot, not_subscribed, session=session)
-        keyboard = build_subscription_keyboard(not_subscribed, lang, channel_urls=channel_urls)
+        channel_urls = await _get_invite_links(bot, channels_to_show, session=session)
+        keyboard = build_subscription_keyboard(channels_to_show, lang, channel_urls=channel_urls)
 
         if isinstance(event, Message):
             await event.answer(text, reply_markup=keyboard)

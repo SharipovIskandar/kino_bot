@@ -24,9 +24,10 @@ async def check_user_subscriptions(
     not_subscribed = []
 
     for channel in channels:
-        # Fake ID li join-request kanallar (channel_id < 0 va kichik raqam)
-        # tekshirib bo'lmaydi — shunchaki o'tkazib yuboramiz
+        # Fake ID li join-request kanallar tekshirib bo'lmaydi —
+        # middleware ularni alohida keyboard'ga qo'shadi
         if _is_fake_channel_id(channel.channel_id):
+            not_subscribed.append(channel)
             continue
 
         try:
