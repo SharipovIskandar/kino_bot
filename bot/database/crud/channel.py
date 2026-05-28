@@ -49,7 +49,7 @@ async def add_channel(
         order=last_order + 1,
     )
     session.add(channel)
-    await session.commit()
+    await session.flush()
     await session.refresh(channel)
     return channel
 
@@ -63,7 +63,7 @@ async def remove_channel(session: AsyncSession, channel_id: int) -> bool:
     if not channel:
         return False
     channel.is_active = False
-    await session.commit()
+    await session.flush()
     return True
 
 
