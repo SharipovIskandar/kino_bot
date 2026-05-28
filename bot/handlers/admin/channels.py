@@ -10,7 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.models import User
 from bot.database.crud.channel import (
-    get_all_channels, add_channel, remove_channel, get_channel_by_id
+    get_all_channels, add_channel, delete_channel, toggle_channel,
+    get_channel_by_id, get_channel_by_db_id,
 )
 from bot.handlers.admin.panel import is_admin
 from bot.keyboards.admin_kb import build_channels_list_keyboard
@@ -19,7 +20,6 @@ from bot.services.subscription_checker import check_bot_is_admin
 
 router = Router(name="admin_channels")
 
-# t.me/+ yoki https://t.me/+ formatdagi join request / invite link
 _JOIN_LINK_RE = re.compile(r"(?:https?://)?t\.me/\+(\S+)", re.IGNORECASE)
 
 
@@ -29,14 +29,12 @@ def _is_join_link(text: str) -> bool:
 
 def _normalize_join_link(text: str) -> str:
     m = _JOIN_LINK_RE.search(text)
-    if m:
-        return f"https://t.me/+{m.group(1)}"
-    return text
+    return f"https://t.me/+{m.group(1)}" if m else text
 
 
 class ChannelState(StatesGroup):
     waiting_channel = State()
-    waiting_join_link_info = State()   # join request link uchun qo'shimcha ma'lumot
+    waiting_join_title = State()   # join request link uchun faqat title
 
 
 # ── Kanallar ro'yxati ────────────────────────────────────────────────────────
@@ -53,9 +51,11 @@ async def callback_channels_list(
         return
 
     channels = await get_all_channels(session)
-    text = get_text("channels-list", lang)
     keyboard = build_channels_list_keyboard(channels, lang)
-    await callback.message.edit_text(text, reply_markup=keyboard)
+    try:
+        await callback.message.edit_text(get_text("channels-list", lang), reply_markup=keyboard)
+    except TelegramBadRequest:
+        pass
     await callback.answer()
 
 
@@ -89,11 +89,11 @@ async def process_channel_add(
     await state.clear()
     text = (message.text or "").strip()
 
-    # ── Join request / invite link (t.me/+XXXX) ──────────────────────────
+    # ── Join request link (t.me/+XXXX) ───────────────────────────────────
     if _is_join_link(text):
         invite_link = _normalize_join_link(text)
 
-        # Bot kanalda admin bo'lsa — ma'lumotlarni avtomatik olamiz
+        # Bot kanalda admin bo'lsa — avtomatik qo'shamiz
         try:
             chat = await bot.get_chat(invite_link)
             channel_id = chat.id
@@ -115,23 +115,21 @@ async def process_channel_add(
             )
             await message.answer(get_text("channel-added", lang, title=title))
             return
-
         except (TelegramForbiddenError, TelegramBadRequest, Exception):
             pass
 
-        # Bot kanalda admin emas — qo'shimcha ma'lumot so'raymiz
-        await state.set_state(ChannelState.waiting_join_link_info)
+        # Bot kanalda admin emas → faqat kanal nomini so'raymiz
+        await state.set_state(ChannelState.waiting_join_title)
         await state.update_data(join_link=invite_link)
-        await message.answer(get_text("channel-join-link-need-info", lang))
+        await message.answer(get_text("channel-join-ask-title", lang))
         return
 
-    # ── Oddiy kanal: username yoki ID ────────────────────────────────────
+    # ── Oddiy kanal: @username yoki ID ───────────────────────────────────
     try:
         if text.startswith("-") or text.lstrip("-").isdigit():
             channel_id = int(text)
         else:
-            username = text.lstrip("@")
-            chat = await bot.get_chat(f"@{username}")
+            chat = await bot.get_chat(f"@{text.lstrip('@')}")
             channel_id = chat.id
     except Exception:
         await message.answer(get_text("channel-not-found", lang))
@@ -142,8 +140,7 @@ async def process_channel_add(
         await message.answer(get_text("channel-already-exists", lang))
         return
 
-    bot_is_admin = await check_bot_is_admin(bot, channel_id)
-    if not bot_is_admin:
+    if not await check_bot_is_admin(bot, channel_id):
         await message.answer(get_text("channel-bot-not-admin", lang))
         return
 
@@ -172,79 +169,27 @@ async def process_channel_add(
     await message.answer(get_text("channel-added", lang, title=title))
 
 
-# ── Join request link: qo'shimcha ma'lumot olish ────────────────────────────
-
-@router.message(ChannelState.waiting_join_link_info)
-async def process_join_link_info(
+@router.message(ChannelState.waiting_join_title)
+async def process_join_title(
     message: Message,
     session: AsyncSession,
-    db_user: User,
     lang: str,
     state: FSMContext,
-    bot,
 ) -> None:
-    """
-    Join request link uchun kanal ID va nomini olish.
-    2 usul qabul qilinadi:
-    1. Kanaldan forward qilingan xabar — ID va nom avtomatik olinadi
-    2. Matn: "Kanal nomi | -100XXXXXXXXX"
-    """
+    """Join request link uchun faqat kanal nomini olamiz"""
     data = await state.get_data()
-    invite_link = data.get("join_link", "")
-
-    # ── Usul 1: Forward qilingan xabar ───────────────────────────────────
-    if message.forward_from_chat:
-        fwd_chat = message.forward_from_chat
-        if fwd_chat.type not in ("channel", "supergroup"):
-            await message.answer(get_text("channel-forward-not-channel", lang))
-            return
-
-        channel_id = fwd_chat.id
-        title = fwd_chat.title or str(channel_id)
-        username = getattr(fwd_chat, "username", None)
-
-        await state.clear()
-
-        existing = await get_channel_by_id(session, channel_id)
-        if existing and existing.is_active:
-            await message.answer(get_text("channel-already-exists", lang))
-            return
-
-        await add_channel(
-            session=session,
-            channel_id=channel_id,
-            channel_title=title,
-            channel_username=username,
-            invite_link=invite_link,
-            added_by=message.from_user.id,
-        )
-        await message.answer(get_text("channel-added", lang, title=title))
-        return
-
-    # ── Usul 2: Matn "Kanal nomi | -100XXXXXXXXX" ────────────────────────
-    text = (message.text or "").strip()
-    if "|" not in text:
-        await message.answer(get_text("channel-join-link-format-hint", lang))
-        return
-
-    parts = text.split("|", 1)
-    title = parts[0].strip()
-    try:
-        channel_id = int(parts[1].strip())
-    except ValueError:
-        await message.answer(get_text("channel-join-link-format-hint", lang))
-        return
-
     await state.clear()
 
-    existing = await get_channel_by_id(session, channel_id)
-    if existing and existing.is_active:
-        await message.answer(get_text("channel-already-exists", lang))
+    invite_link = data.get("join_link", "")
+    title = (message.text or "").strip()
+
+    if not title:
+        await message.answer(get_text("channel-join-ask-title", lang))
         return
 
+    # channel_id yo'q — CRUD fake ID generatsiya qiladi
     await add_channel(
         session=session,
-        channel_id=channel_id,
         channel_title=title,
         channel_username=None,
         invite_link=invite_link,
@@ -266,35 +211,42 @@ async def callback_channel_info(
         await callback.answer(get_text("access-denied", lang), show_alert=True)
         return
 
-    channel_id = int(callback.data.split(":")[2])
-    ch = await get_channel_by_id(session, channel_id)
+    db_id = int(callback.data.split(":")[2])
+    ch = await get_channel_by_db_id(session, db_id)
 
     if not ch:
         await callback.answer(get_text("channel-not-found", lang), show_alert=True)
         return
 
+    await _show_channel_info(callback, ch, lang)
+
+
+async def _show_channel_info(callback: CallbackQuery, ch, lang: str) -> None:
     status = "✅ Aktiv" if ch.is_active else "❌ Noaktiv"
     link_line = ""
     if ch.invite_link:
-        link_line = f"\n🔗 Link: {ch.invite_link}"
+        link_line = f"\n🔗 {ch.invite_link}"
     elif ch.channel_username:
         link_line = f"\n🔗 @{ch.channel_username}"
 
     text = (
         f"📢 <b>{ch.channel_title}</b>\n"
-        f"🆔 ID: <code>{ch.channel_id}</code>\n"
         f"📊 Holat: {status}"
         f"{link_line}"
     )
 
+    toggle_label = "⏸ Noaktiv qilish" if ch.is_active else "▶️ Faollashtirish"
     builder = InlineKeyboardBuilder()
-    if ch.is_active:
-        builder.row(InlineKeyboardButton(
-            text="🗑 Ro'yxatdan o'chirish",
-            callback_data=f"channel:remove:{ch.channel_id}",
-        ))
     builder.row(InlineKeyboardButton(
-        text=get_text("btn-back", lang),
+        text=toggle_label,
+        callback_data=f"channel:toggle:{ch.id}",
+    ))
+    builder.row(InlineKeyboardButton(
+        text="🗑 O'chirish (butunlay)",
+        callback_data=f"channel:delete:{ch.id}",
+    ))
+    builder.row(InlineKeyboardButton(
+        text="◀️ Ortga",
         callback_data="admin:channels",
     ))
 
@@ -305,10 +257,10 @@ async def callback_channel_info(
     await callback.answer()
 
 
-# ── Kanalni o'chirish ────────────────────────────────────────────────────────
+# ── Toggle aktiv/noaktiv ─────────────────────────────────────────────────────
 
-@router.callback_query(F.data.startswith("channel:remove:"))
-async def callback_channel_remove(
+@router.callback_query(F.data.startswith("channel:toggle:"))
+async def callback_channel_toggle(
     callback: CallbackQuery,
     session: AsyncSession,
     db_user: User,
@@ -318,17 +270,69 @@ async def callback_channel_remove(
         await callback.answer(get_text("access-denied", lang), show_alert=True)
         return
 
-    channel_id = int(callback.data.split(":")[2])
-    removed = await remove_channel(session, channel_id)
+    db_id = int(callback.data.split(":")[2])
+    new_status = await toggle_channel(session, db_id)
 
-    if removed:
+    if new_status is None:
+        await callback.answer(get_text("channel-not-found", lang), show_alert=True)
+        return
+
+    label = "✅ Faollashtirildi" if new_status else "⏸ Noaktiv qilindi"
+    await callback.answer(label)
+
+    ch = await get_channel_by_db_id(session, db_id)
+    if ch:
+        await _show_channel_info(callback, ch, lang)
+
+
+# ── Butunlay o'chirish ───────────────────────────────────────────────────────
+
+@router.callback_query(F.data.startswith("channel:delete:"))
+async def callback_channel_delete(
+    callback: CallbackQuery,
+    session: AsyncSession,
+    db_user: User,
+    lang: str,
+) -> None:
+    if not is_admin(callback.from_user.id, db_user):
+        await callback.answer(get_text("access-denied", lang), show_alert=True)
+        return
+
+    db_id = int(callback.data.split(":")[2])
+    deleted = await delete_channel(session, db_id)
+
+    if deleted:
         await callback.answer(get_text("channel-removed", lang))
         channels = await get_all_channels(session)
-        text = get_text("channels-list", lang)
         keyboard = build_channels_list_keyboard(channels, lang)
         try:
-            await callback.message.edit_text(text, reply_markup=keyboard)
+            await callback.message.edit_text(
+                get_text("channels-list", lang), reply_markup=keyboard
+            )
         except TelegramBadRequest:
             pass
     else:
         await callback.answer(get_text("channel-not-found", lang), show_alert=True)
+
+
+# ── Eski remove callback (backward compat) ───────────────────────────────────
+
+@router.callback_query(F.data.startswith("channel:remove:"))
+async def callback_channel_remove_legacy(
+    callback: CallbackQuery,
+    session: AsyncSession,
+    db_user: User,
+    lang: str,
+) -> None:
+    """Keyboard'dagi 🗑 tugmasi hali channel_id ishlatmoqda — info sahifasiga yo'naltiramiz"""
+    if not is_admin(callback.from_user.id, db_user):
+        await callback.answer(get_text("access-denied", lang), show_alert=True)
+        return
+
+    channel_id = int(callback.data.split(":")[2])
+    ch = await get_channel_by_id(session, channel_id)
+    if not ch:
+        await callback.answer(get_text("channel-not-found", lang), show_alert=True)
+        return
+
+    await _show_channel_info(callback, ch, lang)

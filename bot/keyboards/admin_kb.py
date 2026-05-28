@@ -108,11 +108,11 @@ def build_channels_list_keyboard(
         builder.row(
             InlineKeyboardButton(
                 text=f"{status} {ch.channel_title}",
-                callback_data=f"channel:info:{ch.channel_id}",
+                callback_data=f"channel:info:{ch.id}",
             ),
             InlineKeyboardButton(
                 text="🗑",
-                callback_data=f"channel:remove:{ch.channel_id}",
+                callback_data=f"channel:delete:{ch.id}",
             ),
         )
     builder.row(
