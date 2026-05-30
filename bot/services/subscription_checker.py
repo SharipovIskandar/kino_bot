@@ -3,8 +3,11 @@ from typing import List
 from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError, TelegramBadRequest
 from loguru import logger
+from redis.asyncio import Redis
 
 from bot.database.models import MandatoryChannel
+
+_FAKE_OK_KEY = "sub_fake_ok:{user_id}"
 
 # Obuna hisoblangan statuslar
 _SUBSCRIBED_STATUSES = {"member", "administrator", "creator"}
@@ -72,6 +75,33 @@ def _is_fake_channel_id(channel_id: int) -> bool:
     Real Telegram kanal IDlari -100XXXXXXXXXX (13+ xona), fake IDlar -1 dan -99_999_999 gacha.
     """
     return -100_000_000 < channel_id < 0
+
+
+async def get_fake_not_verified(
+    redis: Redis, user_id: int, channels: List[MandatoryChannel]
+) -> List[MandatoryChannel]:
+    """
+    Foydalanuvchi hali Redis'da tasdiqlamagan fake kanallar ro'yxatini qaytaradi.
+    Yangi kanal qo'shilsa yoki birinchi marta kirishda ishlatiladi.
+    """
+    fake_channels = [ch for ch in channels if _is_fake_channel_id(ch.channel_id)]
+    if not fake_channels:
+        return []
+    key = _FAKE_OK_KEY.format(user_id=user_id)
+    raw = await redis.smembers(key)
+    verified_ids = {int(v.decode()) for v in raw}
+    return [ch for ch in fake_channels if ch.channel_id not in verified_ids]
+
+
+async def store_fake_verifications(
+    redis: Redis, user_id: int, channels: List[MandatoryChannel]
+) -> None:
+    """Foydalanuvchi barcha real kanallarga obuna bo'lgach, fake kanallarni tasdiqlanган deb belgilaydi."""
+    fake_channels = [ch for ch in channels if _is_fake_channel_id(ch.channel_id)]
+    if not fake_channels:
+        return
+    key = _FAKE_OK_KEY.format(user_id=user_id)
+    await redis.sadd(key, *[str(ch.channel_id) for ch in fake_channels])
 
 
 async def check_bot_is_admin(bot: Bot, channel_id: int) -> bool:

@@ -7,7 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.config import settings
 from bot.database.crud.channel import get_active_channels
-from bot.services.subscription_checker import check_user_subscriptions, _is_fake_channel_id
+from bot.services.subscription_checker import (
+    check_user_subscriptions, _is_fake_channel_id,
+    get_fake_not_verified,
+)
 from bot.keyboards.user_kb import build_subscription_keyboard
 from bot.services.i18n import get_text
 
@@ -43,8 +46,9 @@ async def _get_invite_links(bot, channels: list, session=None) -> dict:
 class SubscriptionMiddleware(BaseMiddleware):
     """
     Majburiy kanal obunasini tekshiradi.
+    Real kanallar — Telegram API orqali (har so'rovda).
+    Fake/join-request kanallar — Redis'da saqlangan tasdiq orqali.
     Adminlar va super adminlar bu middleware'dan o'tib ketadi.
-    Redis orqali 60s ichida bir foydalanuvchiga faqat bitta xabar yuboriladi.
     """
 
     def __init__(self, redis: Redis) -> None:
@@ -99,16 +103,17 @@ class SubscriptionMiddleware(BaseMiddleware):
             channels=channels,
         )
 
-        # Real kanallar (verifikatsiya qilinadigan) va fake-ID (join-request) kanallarni ajratish
+        # Real kanallar — Telegram API orqali tekshiriladi
         real_not_subscribed = [ch for ch in not_subscribed if not _is_fake_channel_id(ch.channel_id)]
-        fake_channels = [ch for ch in not_subscribed if _is_fake_channel_id(ch.channel_id)]
 
-        # Faqat real kanallar bloklaydi; fake-ID kanallar faqat keyboard'da ko'rsatiladi
-        if not real_not_subscribed:
+        # Fake-ID kanallar — Redis orqali foydalanuvchi tasdiqlaganligini tekshiramiz
+        fake_not_verified = await get_fake_not_verified(self.redis, tg_user.id, channels)
+
+        if not real_not_subscribed and not fake_not_verified:
             return await handler(event, data)
 
-        # Keyboard'da: obuna bo'lmagan real kanallar + join-request kanallar
-        channels_to_show = real_not_subscribed + fake_channels
+        # Keyboard'da: obuna bo'lmagan real kanallar + tasdiqlanmagan fake kanallar
+        channels_to_show = real_not_subscribed + fake_not_verified
 
         text = get_text("subscription-required", lang)
         channel_urls = await _get_invite_links(bot, channels_to_show, session=session)
